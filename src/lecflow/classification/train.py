@@ -31,11 +31,11 @@ def train_classifier_embeddings(sentences: list[str], labels: list[int]) -> tupl
     sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
     embeddings = sent_transformer.encode(x_train)
 
-    model = LogisticRegression(max_iter=1000, class_weight='balanced') #compensate for skewed data
-    model.fit(embeddings, y_train)
+    embed_model = LogisticRegression(max_iter=1000, class_weight='balanced') #compensate for skewed data
+    embed_model.fit(embeddings, y_train)
 
     #return transformer and test for evaluation later
-    return model, sent_transformer, (x_test, y_test) 
+    return embed_model, sent_transformer, (x_test, y_test) 
 
 def save_test_data(x_test: list[str], y_test: list[int], output_path: Path) -> None:
     '''Save held-out test data (sentences and labels) to CSV for later evaluation without re-training'''
@@ -43,7 +43,6 @@ def save_test_data(x_test: list[str], y_test: list[int], output_path: Path) -> N
     output_path.parent.mkdir(parents=True, exist_ok=True)  
     df = pd.DataFrame({'Sentence': x_test, 'Label': y_test}) #same shape as original
     df.to_csv(output_path, index=False) #save w/o row numbers
-
     
 def save_classifier(model: LogisticRegression, vectorizer: TfidfVectorizer, model_dir: Path) -> None:
     '''Save a trained LogisticRegression model and TfidfVectorizer to disk.'''
@@ -52,6 +51,13 @@ def save_classifier(model: LogisticRegression, vectorizer: TfidfVectorizer, mode
     joblib.dump(model, model_dir / 'housekeeping_classifier.joblib')
     joblib.dump(vectorizer, model_dir / 'tfidf_vectorizer.joblib')
 
+def save_embed_classifier(embed_model: LogisticRegression, model_dir: Path) -> None:
+    '''Save a trained LogisticRegression model from sentence-transformer embeddings.'''
+    #make folder if doesn't already exist, create outputs if necessary
+    model_dir.mkdir(parents=True, exist_ok=True)
+    joblib.dump(embed_model, model_dir / 'housekeeping_embed_classifier.joblib')
+
+
 if __name__ == '__main__':
     csv_path = Path('data/labeled/lecflow_contentvhousekeeping_data.csv')
     df = load_data(csv_path)
@@ -59,6 +65,12 @@ if __name__ == '__main__':
     sentences, labels = split_sentences_labels(df)
 
     model, vectorizer, (x_test, y_test) = train_classifier(sentences, labels)
+    embed_model, sent_transformer, (x_test, y_test) = train_classifier_embeddings(sentences, labels)
+
     save_test_data(x_test, y_test, Path('data/splits/test_set.csv'))
+
     save_classifier(model, vectorizer, Path('models'))
-    print('Model saved successfully')
+    print('TF-IDF LR Model saved successfully')
+
+    save_embed_classifier(embed_model, Path('models'))
+    print('Sentence-embedding LR Model saved successfully')

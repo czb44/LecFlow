@@ -13,6 +13,12 @@ def load_model(model_dir: Path) -> tuple[LogisticRegression, TfidfVectorizer]:
     vectorizer = joblib.load(model_dir / 'tfidf_vectorizer.joblib')
     return model, vectorizer
 
+def load_embed_model(model_dir: Path) -> LogisticRegression:
+    '''Loads a trained LogisticRegression model from sentence-transformer embeddings'''
+    embed_model = joblib.load(model_dir / 'housekeeping_embed_classifier.joblib')
+    return embed_model
+
+
 def load_data(file_path: Path) -> pd.DataFrame:
     '''Load training data csv'''
     df = pd.read_csv(file_path)
