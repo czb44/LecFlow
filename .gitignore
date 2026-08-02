@@ -17,3 +17,12 @@ __pycache__/
 
 # VS Code settings
 .vscode/
+
+#Sample data
+data/
+
+#Outputs
+outputs/
+
+#Models: can be regenerated w/ train.py
+*.joblib

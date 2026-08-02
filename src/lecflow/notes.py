@@ -1,12 +1,32 @@
 from pathlib import Path
+from .unit_type import classify_unit_type
 
-def generate_notes(filtered_transcript: str) -> str:
+def generate_notes(blocks: list[list[str]], housekeeping_sentences: list[str]) -> str:
     '''Converts cleaned transcript to a Markdown-formatted string'''
-    placeholder_summary = 'This is a placeholder summary'
     heading = '# Lecture Notes\n\n'
-    summary = f'## Raw Summary\n\n{placeholder_summary}\n\n'
-    body = f'## Main Transcript\n\n{filtered_transcript}'
-    return heading + summary + body
+    body = ''
+
+    #Display sentences of each block in natural lecture flow
+    for i, block in enumerate(blocks):
+        body += f'## Topic {i +1}\n\n'
+        for sentence in block:
+            unit_type = classify_unit_type(sentence)
+            if unit_type == 'example':
+                body += f'*Example:* {sentence}\n'
+            elif unit_type == 'question':
+                body += f'*Question:* {sentence}\n'
+            elif unit_type == 'definition':
+                body += f'**Definition:** {sentence}\n'
+            elif unit_type == 'explanation': #no label for content
+                body += f'- {sentence}\n'
+        body += '\n\n'
+    
+    housekeeping_head = '## Housekeeping\n\n'
+    housekeeping_body = ''
+    for sent in housekeeping_sentences:
+        housekeeping_body += f'- {sent}\n'
+
+    return heading + body + housekeeping_head + housekeeping_body
 
 def save_notes(notes: str, output_path: Path) -> None:
     '''Ensures output folder exists and writes notes (Markdown string)

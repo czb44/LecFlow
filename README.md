@@ -43,9 +43,10 @@ Study:
 - search previous lectures
 - track weak concepts
 
-Later Versions:
-- Audio
+Later Versions / Improvements:
+- Audio / Video
 - Be able to accept different file types / encodings
+- Local ML classifier (scikit-learn: chunk text → TF-IDF features → logistic regression → label. Learn patters via training examples)
 - Optional Slides/PDFs
 - Chatbot (maybe)
 
@@ -61,3 +62,7 @@ Later Versions:
 
 
 ## Status: WIP
+
+
+
+## Methodologies:

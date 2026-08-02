@@ -1,1 +1,7 @@
-#Virtual environment
+spacy
+click
+pandas
+joblib
+scikit-learn
+matplotlib
+sentence-transformers
