@@ -3,11 +3,7 @@ from .transcript import load_transcript, filter_transcript, split_into_sentences
 from .classification.data import label_key, load_model, load_embed_model, load_data, split_sentences_labels
 from .classification.predict import predict_labels, predict_labels_embed
 from .notes import generate_notes, save_notes
-from .chunking import group_adjacent
 from .topics.cluster import train_clusters, group_by_cluster, sentence_embedding_cluster_train
-
-
-
 
 
 def main() -> None:
@@ -37,7 +33,7 @@ def main() -> None:
     
     for k in range(4, 5): #loop to test different k-values
         (cluster_model, cluster_labels) = sentence_embedding_cluster_train(content_sentences, k)
-        blocks = group_adjacent(content_sentences, cluster_labels)
+        blocks = group_by_cluster(content_sentences, cluster_labels)
 
         # print(f'K = {k}')
         # for i, block in enumerate(blocks):
