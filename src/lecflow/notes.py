@@ -1,5 +1,5 @@
 from pathlib import Path
-from .unit_type import classify_unit_type
+from .unit_type.rules import classify_unit_type
 
 def generate_notes(blocks: dict[int, list[str]], housekeeping_sentences: list[str]) -> str:
     '''Converts cleaned transcript to a Markdown-formatted string'''

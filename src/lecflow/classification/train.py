@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sentence_transformers import SentenceTransformer
 import pandas as pd
-from .data import load_data, split_sentences_labels, check_balanced
+from ..data import load_data, split_sentences_labels, check_balanced
 
 def train_classifier(sentences: list[str], labels: list[int]) -> tuple[LogisticRegression, TfidfVectorizer, tuple[list[str], list[int]]]:
     '''Create TF-IDF classifier + Logistic Regression pipeline'''
