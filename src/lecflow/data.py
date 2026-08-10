@@ -27,6 +27,7 @@ def load_data(file_path: Path) -> pd.DataFrame:
 def check_balanced(df: pd.DataFrame, threshold: float=0.8) -> bool:
     '''Check class-balance of labels in training data. Returns True if data is balanced'''
     val_cts = df['Label'].value_counts()
+    print(f'Class breakdown:\n{val_cts}')
     minor, major = val_cts.min(), val_cts.max()
     frac = minor / major
 
