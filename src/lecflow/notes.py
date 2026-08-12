@@ -1,14 +1,14 @@
 from pathlib import Path
 from .unit_type.rules import classify_unit_type
 
-def generate_notes(blocks: dict[int, list[str]], housekeeping_sentences: list[str]) -> str:
+def generate_notes(blocks: dict[int, list[str]], topic_labels: dict[int, str], housekeeping_sentences: list[str]) -> str:
     '''Converts cleaned transcript to a Markdown-formatted string'''
     heading = '# Lecture Notes\n\n'
     body = ''
 
     #Display sentences of each block in natural lecture flow
     for i, block in blocks.items():
-        body += f'## Topic {i +1}\n\n'
+        body += f'## {topic_labels[i].title()}\n\n'
         for sentence in block:
             unit_type = classify_unit_type(sentence)
             if unit_type == 'example':

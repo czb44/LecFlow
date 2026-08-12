@@ -1,10 +1,12 @@
 from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import SentenceTransformer
 from collections import defaultdict
 from ..transcript import load_transcript, filter_transcript, split_into_sentences
-
+import spacy
+import numpy as np
 
 def train_clusters(sentences: list[str], k: int) -> tuple[TfidfVectorizer, KMeans, list[int]]:
     '''Vectorize sentences with TF-IDF classifier and cluster into K clusters with KMeans'''
@@ -37,6 +39,37 @@ def group_by_cluster(sentences: list[str], cluster_labels: list[int]) -> dict[in
     for sent, label in zip(sentences, cluster_labels):
         groups[label].append(sent)
     return groups
+
+nlp = spacy.load("en_core_web_sm") # load spacy one time
+def get_candidate_phrases(sentences: list[str]) -> list[str]:
+    '''Extracts noun labels from sentences as candidates for topic labels'''
+    nouns = []
+    for sentence in sentences:
+        proc_sentence = nlp(sentence)
+        for word in proc_sentence.noun_chunks:
+            nouns.append(word.text)
+    return list(set(nouns)) #remove duplicates
+
+def get_topic_labels(sentences: list[str]) -> str:
+    '''Finds the most representative phrase of a group of sentences'''
+    sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
+    embeddings = sent_transformer.encode(sentences)
+    
+    #Centroid: mean of embeddings along rows, reshap for cosine similarity
+    mean_embedding = np.mean(embeddings, axis=0).reshape(1,-1) #1D -> 2D
+
+    candidate_nouns = get_candidate_phrases(sentences)
+    if not candidate_nouns: #Edge case - no nouns identified
+        similarities = cosine_similarity(embeddings, mean_embedding).flatten() # -> 1D
+        closest_index = np.argmax(similarities)
+        return sentences[closest_index][:80] #print sentence, cap at 80 characters
+
+    #Compare candidate embeddings
+    candidate_embeddings = sent_transformer.encode(candidate_nouns)
+    candidate_scores = cosine_similarity(candidate_embeddings, mean_embedding).flatten()
+    best_index = np.argmax(candidate_scores)
+    return candidate_nouns[best_index]
+
 
 
 if __name__ == '__main__':
