@@ -28,7 +28,7 @@ if __name__ == '__main__':
     sentences = ['Next class is canceled because of the storm', 'Counting is a fundamental skill in probability']
 
     predictions = predict_labels(model, vectorizer, sentences)
-    embed_predictions = predict_labels_embed(embed_model, sentences)
+    embed_predictions = predict_labels_embed(embed_model, sentences, sent_transformer)
 
     for sentence, tfidf_pred, embed_pred in zip(sentences, predictions, embed_predictions):
         print(f'TF-IDF: {label_key[tfidf_pred]} | Embedding: {label_key[embed_pred]} | {sentence}')

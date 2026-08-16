@@ -10,17 +10,12 @@ from sentence_transformers import SentenceTransformer
 
 
 
-
-def main() -> None:
-    file_path = Path("data/sample/lecture_2.txt")
-    
+def full_pipeline(raw_transcript_txt: str, sent_transformer) -> tuple[str, str]:
+    '''Runs full lecture processing pipeline. Returns filtered
+    transcript and lecture notes.'''
     #Load and clean transcript
-    transcript = load_transcript(file_path)
-    filtered = filter_transcript(transcript)
+    filtered = filter_transcript(raw_transcript_txt)
     sentences = split_into_sentences(filtered)
-
-    #Load sentence transformer
-    sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
 
     #Use pre-trained LR classifier (embed) for housekeeping 
     embed_model = load_embed_model(Path('models'))
@@ -37,9 +32,21 @@ def main() -> None:
         topic_labels[cluster_num] = get_topic_labels(group_of_sents, sent_transformer)
 
     notes = generate_notes(blocks, topic_labels, housekeeping_sentences)
+    
+    return filtered, notes
+
+
+
+def main() -> None:
+    file_path = Path("data/sample/lecture_2.txt")
+    raw_transcript_txt = load_transcript(file_path)
+
+    sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
+
+    filtered, notes = full_pipeline(raw_transcript_txt, sent_transformer)
+    
     output_path = Path("outputs/notes/lecture_2_notes_v2_3.md")
     save_notes(notes, output_path) 
-
     print(f'Notes saved to: {output_path}')
 
 
