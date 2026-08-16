@@ -6,6 +6,8 @@ from .unit_type.rules import classify_unit_type
 from .classification.predict import predict_labels, predict_labels_embed
 from .notes import generate_notes, save_notes
 from .topics.cluster import train_clusters, group_by_cluster, sentence_embedding_cluster_train, get_topic_labels
+from sentence_transformers import SentenceTransformer
+
 
 
 
