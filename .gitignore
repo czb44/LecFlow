@@ -26,3 +26,6 @@ outputs/
 
 #Models: can be regenerated w/ train.py
 *.joblib
+
+#Database
+*.db
