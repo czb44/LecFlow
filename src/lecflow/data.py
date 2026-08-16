@@ -43,8 +43,7 @@ def split_sentences_labels(df: pd.DataFrame) -> tuple[list[str], list[int]]:
     sentences = df['Sentence'].tolist()
     labels = df['Label'].tolist()
     return sentences, labels
-
-
+    
 
 if __name__ == '__main__':
     csv_path = Path('data/labeled/lecflow_contentvhousekeeping_data.csv')

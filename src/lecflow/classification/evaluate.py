@@ -49,11 +49,10 @@ def evaluate_model(model, vectorizer, x_test, y_test, output_path) -> None:
     plt.show()
     plt.close() 
 
-def evaluate_embed_model(embed_model, x_test, y_test, output_path) -> None:
+def evaluate_embed_model(embed_model, sent_transformer, x_test, y_test, output_path) -> None:
     '''Analyze sentence-trasnsformer embedding model performance with accuracy, classification report, 
     and confusion matrix. Plots and saves confusion matrix to output path'''
-    embedding_transformer = SentenceTransformer('all-MiniLM-L6-v2')
-    sentences_embedded = embedding_transformer.encode(x_test)
+    sentences_embedded = sent_transformer.encode(x_test)
 
     y_pred = embed_model.predict(sentences_embedded)
     
@@ -78,6 +77,8 @@ def evaluate_embed_model(embed_model, x_test, y_test, output_path) -> None:
 if __name__ == '__main__':
     model, vectorizer = load_model(Path('models'))
     embed_model = load_embed_model(Path('models'))
+    sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
+
 
     hard_data = load_data(Path('data/labeled/hard_housekeeping_dataset.csv'))
     x_hard, y_hard = split_sentences_labels(hard_data)

@@ -11,10 +11,9 @@ def predict_labels(model, vectorizer, sentences: list[str]) -> list[int]:
 
     return y_pred.tolist() #np.array -> list
 
-def predict_labels_embed(embed_model, sentences: list[str]) -> list[int]:
+def predict_labels_embed(embed_model, sentences: list[str], sent_transformer: SentenceTransformer) -> list[int]:
     '''Predicts labels for new, unlabeled sentences using trained sentence-transformer embedding model'''
-    embedding_transformer = SentenceTransformer('all-MiniLM-L6-v2')
-    sentences_embedded = embedding_transformer.encode(sentences)
+    sentences_embedded = sent_transformer.encode(sentences)
     
     y_pred = embed_model.predict(sentences_embedded)
 
@@ -24,7 +23,7 @@ def predict_labels_embed(embed_model, sentences: list[str]) -> list[int]:
 if __name__ == '__main__':
     model, vectorizer = load_model(Path('models'))
     embed_model = load_embed_model(Path('models'))
-
+    sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
 
     sentences = ['Next class is canceled because of the storm', 'Counting is a fundamental skill in probability']
 

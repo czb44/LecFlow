@@ -20,9 +20,8 @@ def train_clusters(sentences: list[str], k: int) -> tuple[TfidfVectorizer, KMean
 
     return vectorizer, model, cluster_labels
 
-def sentence_embedding_cluster_train(sentences: list[str], k: int) -> tuple[KMeans, list[int]]:
+def sentence_embedding_cluster_train(sentences: list[str], sent_transformer: SentenceTransformer, k: int) -> tuple[KMeans, list[int]]:
     '''Vectorize sentences with sentence embeddings and cluster into K clusters with KMeans'''
-    sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
     embeddings = sent_transformer.encode(sentences)
 
     model = KMeans(n_clusters=k, random_state=2)
@@ -50,9 +49,8 @@ def get_candidate_phrases(sentences: list[str]) -> list[str]:
             nouns.append(word.text)
     return list(set(nouns)) #remove duplicates
 
-def get_topic_labels(sentences: list[str]) -> str:
+def get_topic_labels(sentences: list[str], sent_transformer: SentenceTransformer) -> str:
     '''Finds the most representative phrase of a group of sentences'''
-    sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
     embeddings = sent_transformer.encode(sentences)
     
     #Centroid: mean of embeddings along rows, reshap for cosine similarity
@@ -79,6 +77,10 @@ if __name__ == '__main__':
     filtered = filter_transcript(transcript)
     sentences = split_into_sentences(filtered)
 
+    #load sentence transformer
+    sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
+
+
     for k in range(4,5):
         (vectorizer, model, cluster_labels) = train_clusters(sentences, k)
         groups = group_by_cluster(sentences, cluster_labels)
@@ -90,7 +92,7 @@ if __name__ == '__main__':
         print('\n--------------------------\n')
 
     for k in range(4,5):
-        (model, cluster_labels) = sentence_embedding_cluster_train(sentences, k)
+        (model, cluster_labels) = sentence_embedding_cluster_train(sentences, sent_transformer, k)
         groups = group_by_cluster(sentences, cluster_labels)
         print(f'K = {k}')
         for cluster_number, sentences_grouped in groups.items():
