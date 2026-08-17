@@ -1,16 +1,19 @@
 #Virtual environment
 .venv/
 venv/
-env.
-ENV/
+
 
 #Environment variables
 .env
 .env.*
+env.
+ENV/
 
 #Cache files
 __pycache__/
 *.pyc
+*.py[cod]
+*.egg-info/
 
 # macOS system files
 .DS_Store

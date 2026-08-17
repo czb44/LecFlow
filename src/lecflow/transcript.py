@@ -21,6 +21,14 @@ def split_into_sentences(filtered_transcript: str) -> list[str]:
     #Convert sentence to string, remove whitespace, and ignore blank / empty sentences
     return [sent.text.strip() for sent in proc_transcript.sents if sent.text.strip()] 
 
+def save_transcript(transcript: str, output_path: Path) -> None:
+    '''Ensures output folder exists and writes notes (Markdown string)
+    to output Markdown File'''
+    #create parent directories if neccessary, write notes to file
+    output_path.parent.mkdir(parents=True, exist_ok=True)  
+    output_path.write_text(transcript, encoding='utf-8')
+
+
 if __name__ == '__main__':
     file_path = Path("data/sample/lecture_1.txt")
     raw_transcript = load_transcript(file_path)
