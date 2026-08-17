@@ -1,3 +1,4 @@
+from pathlib import Path
 from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -25,35 +26,60 @@ SessionLocal = sessionmaker(bind=engine) #structure for sessions
 def save_lecture(name: str, notes_path: str, transcript_path: str) -> int:
     '''Saves a new lecture to the database, return its id'''
     session = SessionLocal()
-    lecture = Lecture(name=name, notes_path=notes_path, transcript_path=transcript_path)
-    session.add(lecture)
-    session.commit()
-    lecture_id=lecture.id
-    session.close()
-    return lecture_id
+    try:
+        lecture = Lecture(name=name, notes_path=notes_path, transcript_path=transcript_path)
+        session.add(lecture)
+        session.commit()
+        lecture_id=lecture.id
+        return lecture_id
+    except Exception:
+        session.rollback() #undo unfinished task
+        raise #re-raise original error
+    finally:
+        session.close()
 
 def get_all_lectures() -> list[Lecture]:
     '''Returns all saved lectures'''
     session = SessionLocal()
-    lectures = session.query(Lecture).order_by(Lecture.created_at.desc()).all()
-    session.close()
-    return lectures
+    try:
+        lectures = session.query(Lecture).order_by(Lecture.created_at.desc()).all()
+        return lectures
+    finally:
+        session.close()
+
 
 def get_lecture(lecture_id: int) -> Lecture | None:
     '''Returns lecture with inputted lecture id or None of lecture DNE'''
     session = SessionLocal()
-    lecture = session.query(Lecture).filter(Lecture.id == lecture_id).first()
-    session.close()
-    return lecture
+    try:
+        lecture = session.query(Lecture).filter(Lecture.id == lecture_id).first()
+        return lecture
+    finally:
+        session.close()
+
 
 def del_lecture(lecture_id: int) -> None:
-    '''Deletes a lecture by id if lecture exists'''
+    '''Deletes a lecture and associated files by id if exists'''
     session = SessionLocal()
-    lecture = session.query(Lecture).filter(Lecture.id == lecture_id).first()
-    if lecture: #ensure exist
+    try:
+        lecture = session.query(Lecture).filter(Lecture.id == lecture_id).first()
+        if not lecture: #skip if lecture DNE
+            return
+        
+        notes_path = Path(lecture.notes_path)
+        transcript_path = Path(lecture.transcript_path)
+        if notes_path.exists():
+            notes_path.unlink()
+        if transcript_path.exists():
+            transcript_path.unlink()
+        
         session.delete(lecture)
         session.commit()
-    session.close()
+    except Exception:
+        session.rollback() #undo unfinished task
+        raise #re-raise original error
+    finally: #ensure database session closes on failures
+        session.close()
 
 
 if __name__ == '__main__':

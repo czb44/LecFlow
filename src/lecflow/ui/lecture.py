@@ -5,6 +5,12 @@ from lecflow.database import get_lecture
 
 lecture_id = st.session_state.get('selected_lecture')
 
+if lecture_id is None: #no lecture selected
+    st.switch_page('dashboard.py')
+lecture = get_lecture(lecture_id)
+if lecture is None: #ID exists but lecture DNE
+    st.session_state.pop('selected_lecture', None)
+
 if lecture_id is None:
     st.write('No lecture selected. Please select a lecture')
 else:

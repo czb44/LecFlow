@@ -22,7 +22,7 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
 
     content_sentences = [sentence for sentence, prediction in zip(sentences,embed_predictions) if prediction == 0]
     housekeeping_sentences = [sentence for sentence, prediction in zip(sentences,embed_predictions) if prediction == 1]
-
+    
     (cluster_model, cluster_labels) = sentence_embedding_cluster_train(content_sentences, sent_transformer, k=4)
     blocks = group_by_cluster(content_sentences, cluster_labels)
 

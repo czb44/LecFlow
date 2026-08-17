@@ -22,6 +22,11 @@ def train_clusters(sentences: list[str], k: int) -> tuple[TfidfVectorizer, KMean
 
 def sentence_embedding_cluster_train(sentences: list[str], sent_transformer: SentenceTransformer, k: int) -> tuple[KMeans, list[int]]:
     '''Vectorize sentences with sentence embeddings and cluster into K clusters with KMeans'''
+    #Edge case handling: 0 or <k content sentences 
+    if not sentences:
+        raise ValueError("Cannot cluster: 0 content sentences found")
+    k = min(k, len(sentences))
+
     embeddings = sent_transformer.encode(sentences)
 
     model = KMeans(n_clusters=k, random_state=2)
