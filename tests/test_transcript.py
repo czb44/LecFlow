@@ -23,16 +23,30 @@ def test_filter_transcript():
 
 def test_split_into_sentences():
     test_sentences = [
-        "In many problems we start with an initial idea, called a prior, and then gain new evidence.",
+        (
+            "In many problems we start with an initial idea, called a prior, "
+            "and then gain new evidence."
+        ),
         "Suppose a disease is rare, affecting only one percent of the population.",
-        "Conditional independence asks a different question: after we already know some additional information, do the two events still provide extra information about each other?",
-        "This is extremely useful in applications ranging from medical diagnosis to spam filtering and machine learning.",
+        (
+            "Conditional independence asks a different question: "
+            "after we already know some additional information, "
+            "do the two events still provide extra information about each other?"
+        ),
+        (
+            "This is extremely useful in applications ranging from "
+            "medical diagnosis to spam filtering and machine learning."
+        ),
     ]
     test_block = (
-        "In many problems we start with an initial idea, called a prior, and then gain new evidence. "
+        "In many problems we start with an initial idea, "
+        "called a prior, and then gain new evidence. "
         "Suppose a disease is rare, affecting only one percent of the population. "
-        "Conditional independence asks a different question: after we already know some additional information, do the two events still provide extra information about each other? "
-        "This is extremely useful in applications ranging from medical diagnosis to spam filtering and machine learning."
+        "Conditional independence asks a different question: "
+        "after we already know some additional information, "
+        "do the two events still provide extra information about each other? "
+        "This is extremely useful in applications ranging "
+        "from medical diagnosis to spam filtering and machine learning."
     )
     result = split_into_sentences(test_block)
     assert result == test_sentences

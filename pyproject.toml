@@ -26,6 +26,7 @@ dev = [
     "pytest",
     "ruff",
     "mypy",
+    "pre-commit",
 ]
 
 [tool.setuptools.packages.find]
