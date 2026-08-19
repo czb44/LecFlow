@@ -27,8 +27,10 @@ data/
 #Outputs
 outputs/
 
-#Models: can be regenerated w/ train.py
-*.joblib
+#Obsolete models
+models/unit_type_embed_classifier.joblib
+models/housekeeping_classifier.joblib
+models/tfidf_vectorizer.joblib
 
 #Database
 *.db
