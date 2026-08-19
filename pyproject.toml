@@ -18,12 +18,14 @@ dependencies = [
     "sentence-transformers", 
     "sqlalchemy", 
     "streamlit", 
-    "faster-whisper", 
-    "pytest"
+    "faster-whisper",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = [
+    "pytest",
+    "ruff",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

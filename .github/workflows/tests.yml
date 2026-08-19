@@ -28,8 +28,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
       
-      - name: Install spaCy english language model
+      - name: Install spaCy English language model
         run: python -m spacy download en_core_web_sm
+
+      - name: Ruff linting
+        run: ruff check .
+
+      - name: Ruff formatting
+        run: ruff format --check .
 
       - name: Run tests
         run: pytest -v
