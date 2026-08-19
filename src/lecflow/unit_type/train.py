@@ -13,7 +13,7 @@ def train_classifier_embeddings(
     sentences: list[str], labels: list[int]
 ) -> tuple[LogisticRegression, SentenceTransformer, tuple[list[str], list[int]]]:
     """Sentence-transforemer embeddings + Logistic Regression pipeline"""
-    # Holdout 20% for test; random_state for reproducibility; stratify to keep class proportions similar
+    # 20% test holdout; random_state -> reproducibility; stratify -> similar class proportions
     x_train, x_test, y_train, y_test = train_test_split(
         sentences, labels, test_size=0.2, random_state=2, stratify=labels
     )
@@ -31,7 +31,7 @@ def train_classifier_embeddings(
 
 
 def save_test_data(x_test: list[str], y_test: list[int], output_path: Path) -> None:
-    """Save held-out test data (sentences and labels) to CSV for later evaluation without re-training"""
+    """Save held-out test data (sentences and labels) for evaluation without re-training"""
     # make folder if doesn't already exist, create outputs if necessary
     output_path.parent.mkdir(parents=True, exist_ok=True)
     df = pd.DataFrame({"Sentence": x_test, "Label": y_test})  # same shape as original
@@ -51,9 +51,7 @@ if __name__ == "__main__":
     balanced = check_balanced(df)
     sentences, labels = split_sentences_labels(df)
 
-    embed_model, sent_transformer, (x_test, y_test) = train_classifier_embeddings(
-        sentences, labels
-    )
+    embed_model, sent_transformer, (x_test, y_test) = train_classifier_embeddings(sentences, labels)
 
     save_test_data(x_test, y_test, Path("data/splits/gold_unit_type_test_set.csv"))
 

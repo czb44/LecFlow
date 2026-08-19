@@ -11,9 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from ..transcript import filter_transcript, load_transcript, split_into_sentences
 
 
-def train_clusters(
-    sentences: list[str], k: int
-) -> tuple[TfidfVectorizer, KMeans, list[int]]:
+def train_clusters(sentences: list[str], k: int) -> tuple[TfidfVectorizer, KMeans, list[int]]:
     """Vectorize sentences with TF-IDF classifier and cluster into K clusters with KMeans"""
     # Vectorize: learn vocab and TF-IDF weights
     vectorizer = TfidfVectorizer(stop_words="english")  # remove stopwords
@@ -21,9 +19,7 @@ def train_clusters(
 
     model = KMeans(n_clusters=k, random_state=2)
     model.fit(sentence_vectors)
-    cluster_labels = (
-        model.labels_.tolist()
-    )  # pull out cluster assignments, convert to list
+    cluster_labels = model.labels_.tolist()  # pull out cluster assignments, convert to list
 
     return vectorizer, model, cluster_labels
 
@@ -41,18 +37,14 @@ def sentence_embedding_cluster_train(
 
     model = KMeans(n_clusters=k, random_state=2)
     model.fit(embeddings)
-    cluster_labels = (
-        model.labels_.tolist()
-    )  # pull out cluster assignments, convert to list
+    cluster_labels = model.labels_.tolist()  # pull out cluster assignments, convert to list
 
     return model, cluster_labels
 
 
-def group_by_cluster(
-    sentences: list[str], cluster_labels: list[int]
-) -> dict[int, list[str]]:
+def group_by_cluster(sentences: list[str], cluster_labels: list[int]) -> dict[int, list[str]]:
     """Group all sentences by their assigned cluster number, regardeless of poisition in transcript.
-    Note: does not preserve origical sentence order - can merge non-adjacent references to a topic."""
+    Note: doesn't preserve origical sentence order; can merge non-adjacent references of topic."""
     groups = defaultdict(list)
     for sent, label in zip(sentences, cluster_labels):
         groups[label].append(sent)
@@ -72,9 +64,7 @@ def get_candidate_phrases(sentences: list[str]) -> list[str]:
     return list(set(nouns))  # remove duplicates
 
 
-def get_topic_labels(
-    sentences: list[str], sent_transformer: SentenceTransformer
-) -> str:
+def get_topic_labels(sentences: list[str], sent_transformer: SentenceTransformer) -> str:
     """Finds the most representative phrase of a group of sentences"""
     embeddings = sent_transformer.encode(sentences)
 
@@ -115,9 +105,7 @@ if __name__ == "__main__":
         print("\n--------------------------\n")
 
     for k in range(4, 5):
-        (model, cluster_labels) = sentence_embedding_cluster_train(
-            sentences, sent_transformer, k
-        )
+        (model, cluster_labels) = sentence_embedding_cluster_train(sentences, sent_transformer, k)
         groups = group_by_cluster(sentences, cluster_labels)
         print(f"K = {k}")
         for cluster_number, sentences_grouped in groups.items():

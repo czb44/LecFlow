@@ -14,7 +14,7 @@ def train_classifier(
     sentences: list[str], labels: list[int]
 ) -> tuple[LogisticRegression, TfidfVectorizer, tuple[list[str], list[int]]]:
     """Create TF-IDF classifier + Logistic Regression pipeline"""
-    # Holdout 20% for test; random_state for reproducibility; stratify to keep class proportions similar
+    # 20% holdout for test; random_state - reproducibility; stratify -> similar class proportions
     x_train, x_test, y_train, y_test = train_test_split(
         sentences, labels, test_size=0.2, random_state=2, stratify=labels
     )
@@ -23,9 +23,7 @@ def train_classifier(
     vectorizer = TfidfVectorizer(stop_words="english")  # remove stopwords
     x_train_vec = vectorizer.fit_transform(x_train)  # fit on training
 
-    model = LogisticRegression(
-        max_iter=1000, class_weight="balanced"
-    )  # compensate for skewed data
+    model = LogisticRegression(max_iter=1000, class_weight="balanced")  # compensate for skewed data
     model.fit(x_train_vec, y_train)
 
     return model, vectorizer, (x_test, y_test)  # return test for evaluation
@@ -35,7 +33,7 @@ def train_classifier_embeddings(
     sentences: list[str], labels: list[int]
 ) -> tuple[LogisticRegression, SentenceTransformer, tuple[list[str], list[int]]]:
     """Sentence-transforemer embeddings + Logistic Regression pipeline"""
-    # Holdout 20% for test; random_state for reproducibility; stratify to keep class proportions similar
+    # 20% holdout for test; random_state - reproducibility; stratify -> similar class proportions
     x_train, x_test, y_train, y_test = train_test_split(
         sentences, labels, test_size=0.2, random_state=2, stratify=labels
     )
@@ -53,7 +51,7 @@ def train_classifier_embeddings(
 
 
 def save_test_data(x_test: list[str], y_test: list[int], output_path: Path) -> None:
-    """Save held-out test data (sentences and labels) to CSV for later evaluation without re-training"""
+    """Save held-out test data (sentences and labels) for evaluation without re-training"""
     # make folder if doesn't already exist, create outputs if necessary
     output_path.parent.mkdir(parents=True, exist_ok=True)
     df = pd.DataFrame({"Sentence": x_test, "Label": y_test})  # same shape as original
@@ -84,9 +82,7 @@ if __name__ == "__main__":
     sentences, labels = split_sentences_labels(df)
 
     model, vectorizer, (x_test, y_test) = train_classifier(sentences, labels)
-    embed_model, sent_transformer, (x_test, y_test) = train_classifier_embeddings(
-        sentences, labels
-    )
+    embed_model, sent_transformer, (x_test, y_test) = train_classifier_embeddings(sentences, labels)
 
     save_test_data(x_test, y_test, Path("data/splits/test_set.csv"))
 

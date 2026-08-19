@@ -19,7 +19,8 @@ def get_audio_transcription(audio_path: Path, audio_model: WhisperModel) -> str:
     allowed_types = {".wav", ".mp3", ".m4a"}
     if audio_path.suffix.lower() not in allowed_types:
         raise ValueError(
-            f"Audio type '{audio_path.suffix}' is unsupported. Please convert to a supported type: '.wav', '.mp3', '.m4a'"
+            f"Audio type '{audio_path.suffix}' is unsupported. "
+            "Please convert to a supported type: '.wav', '.mp3', '.m4a'"
         )
 
     segments, _ = audio_model.transcribe(audio_path)
@@ -28,9 +29,7 @@ def get_audio_transcription(audio_path: Path, audio_model: WhisperModel) -> str:
     text = " ".join(cleaned_segments)
 
     if not text:
-        raise ValueError(
-            "No speech detected in audio file. Inspect audio file then try again"
-        )
+        raise ValueError("No speech detected in audio file. Inspect audio file then try again")
 
     return text
 
@@ -45,12 +44,11 @@ def video_to_audio(video_path: Path, audio_output_path: Path) -> None:
     allowed_types = {".mp4", ".mov", ".mkv", ".avi", ".webm"}
     if video_path.suffix.lower() not in allowed_types:
         raise ValueError(
-            f"Video type '{video_path.suffix}' is unsupported. Please convert to a supported type: '.mp4', '.mov', '.mkv', '.avi', '.webm'"
+            f"Video type '{video_path.suffix}' is unsupported. "
+            "Please convert to a supported type: '.mp4', '.mov', '.mkv', '.avi', '.webm'"
         )
 
-    audio_output_path.parent.mkdir(
-        parents=True, exist_ok=True
-    )  # create missing directories
+    audio_output_path.parent.mkdir(parents=True, exist_ok=True)  # create missing directories
 
     subprocess.run(
         [

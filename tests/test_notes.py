@@ -3,7 +3,7 @@ from lecflow.notes import generate_notes, save_notes
 
 
 def test_generate_notes(monkeypatch):
-    # use monkeypatch to temporarily replace classify_unity_type w/ deterministic definition labeling
+    # use monkeypatch to temporarily replace classify_unity_type w/ deterministic def labeling
     monkeypatch.setattr(notes, "classify_unit_type", lambda sentence: "definition")
     blocks = {0: ["Conditional probability is the probability of event given another."]}
     topic_labels = {0: "Conditional Probability"}

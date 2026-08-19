@@ -38,7 +38,7 @@ def test_get_lecture(test_database, tmp_path):
 
     lecture = database.get_lecture(lecture_id)
 
-    assert lecture != None
+    assert lecture is not None
     assert lecture.name == "Test Lecture"
     assert lecture.id == lecture_id
     assert isinstance(lecture, Lecture)

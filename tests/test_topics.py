@@ -8,8 +8,16 @@ from lecflow.topics.cluster import (
 
 def test_sentence_embedding_cluster_train(sent_transformer):
     content_sentences = [
-        "Today we're continuing our introduction to probability by focusing on how we update our beliefs when we observe new information.",
-        "By the end of today's lecture, you should understand Bayes' rule, the idea of conditional independence, how these concepts are applied in a worked example, and finally a few reminders about next week's assignment.",
+        (
+            "Today we're continuing our introduction to probability by "
+            "focusing on how we update our beliefs when we observe new information."
+        ),
+        (
+            "By the end of today's lecture, you should understand Bayes' rule, "
+            "the idea of conditional independence, "
+            "how these concepts are applied in a worked example, "
+            "and finally a few reminders about next week's assignment."
+        ),
         "Let's begin with Bayes' rule.",
     ]
     (cluster_model, cluster_labels) = sentence_embedding_cluster_train(
@@ -23,8 +31,16 @@ def test_sentence_embedding_cluster_train(sent_transformer):
 
 def test_group_by_cluster():
     content_sentences = [
-        "Today we're continuing our introduction to probability by focusing on how we update our beliefs when we observe new information.",
-        "By the end of today's lecture, you should understand Bayes' rule, the idea of conditional independence, how these concepts are applied in a worked example, and finally a few reminders about next week's assignment.",
+        (
+            "Today we're continuing our introduction to probability by "
+            "focusing on how we update our beliefs when we observe new information."
+        ),
+        (
+            "By the end of today's lecture, you should understand Bayes' rule, "
+            "the idea of conditional independence, "
+            "how these concepts are applied in a worked example, "
+            "and finally a few reminders about next week's assignment."
+        ),
         "Let's begin with Bayes' rule.",
     ]
     cluster_labels = [0, 1, 0]
@@ -38,8 +54,16 @@ def test_group_by_cluster():
 
 def test_get_topic_labels(sent_transformer):
     content_sentences = [
-        "Today we're continuing our introduction to probability by focusing on how we update our beliefs when we observe new information.",
-        "By the end of today's lecture, you should understand Bayes' rule, the idea of conditional independence, how these concepts are applied in a worked example, and finally a few reminders about next week's assignment.",
+        (
+            "Today we're continuing our introduction to probability by "
+            "focusing on how we update our beliefs when we observe new information."
+        ),
+        (
+            "By the end of today's lecture, you should understand Bayes' rule, "
+            "the idea of conditional independence, "
+            "how these concepts are applied in a worked example, "
+            "and finally a few reminders about next week's assignment."
+        ),
         "Let's begin with Bayes' rule.",
     ]
     result = get_topic_labels(content_sentences, sent_transformer)
@@ -50,8 +74,17 @@ def test_get_topic_labels(sent_transformer):
 
 def test_get_candidate_phrases():
     sentences = [
-        "Today we're continuing our introduction to probability by focusing on how we update our beliefs when we observe new information.",
-        "By the end of today's lecture, you should understand Bayes' rule, the idea of conditional independence, how these concepts are applied in a worked example, and finally a few reminders about next week's assignment.",
+        (
+            "Today we're continuing our introduction to probability by "
+            "focusing on how we update our beliefs when we observe new information."
+        ),
+        (
+            "By the end of today's lecture, you should understand Bayes' rule, "
+            "the idea of conditional independence, "
+            "how these concepts are applied in a worked example, "
+            "and finally a few reminders about next week's assignment."
+        ),
+        "Let's begin with Bayes' rule.",
     ]
     result = get_candidate_phrases(sentences)
     assert isinstance(result, list)

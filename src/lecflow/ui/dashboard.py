@@ -17,14 +17,10 @@ for lecture in lectures:
     lec_col, menu_col = st.columns([8, 1])
 
     with lec_col:
-        if st.button(
-            lecture.name, key=f"lecture_{lecture.id}"
-        ):  # prevent duplicate keys
+        if st.button(lecture.name, key=f"lecture_{lecture.id}"):  # prevent duplicate keys
             st.session_state.selected_lecture = lecture.id
             st.switch_page("lecture.py")
     with menu_col, st.popover("⋮"):
-        if st.button(
-            "Delete", key=f"delete_{lecture.id}"
-        ):  # unique key for each button
+        if st.button("Delete", key=f"delete_{lecture.id}"):  # unique key for each button
             del_lecture(lecture.id)
             st.rerun()

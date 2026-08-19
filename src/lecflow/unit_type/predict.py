@@ -5,10 +5,8 @@ from sentence_transformers import SentenceTransformer
 from .data import load_embed_model_ut
 
 
-def predict_labels_embed_ut(
-    embed_model, sent_transformer, sentences: list[str]
-) -> list[int]:
-    """Predicts labels for new, unlabeled sentences using trained sentence-transformer embedding model"""
+def predict_labels_embed_ut(embed_model, sent_transformer, sentences: list[str]) -> list[int]:
+    """Predicts labels for sentences using trained embedding model"""
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
     sentences_embedded = sent_transformer.encode(sentences)
 
@@ -23,7 +21,10 @@ if __name__ == "__main__":
 
     ex_sentences = [
         "For example, say we flip a coin ten times",
-        "Bayes Rule is the probability of an event based on prior knowledge, new evidence, and conditional probabilities.",
+        (
+            "Bayes Rule is the probability of an event based on prior knowledge, "
+            "new evidence, and conditional probabilities."
+        ),
         "What do you think?",
     ]
     ut_embed_predictions = predict_labels_embed_ut(

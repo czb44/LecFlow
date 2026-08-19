@@ -6,7 +6,7 @@ from .data import label_key, load_embed_model, load_model
 
 
 def predict_labels(model, vectorizer, sentences: list[str]) -> list[int]:
-    """Predicts labels for new, unlabeled sentences using trained model and vectorizer"""
+    """Predicts labels for sentences using trained model and vectorizer"""
     # Vectorize raw sentences internally w/ saved vectorizer
     x_test_vec = vectorizer.transform(sentences)
 
@@ -18,7 +18,7 @@ def predict_labels(model, vectorizer, sentences: list[str]) -> list[int]:
 def predict_labels_embed(
     embed_model, sentences: list[str], sent_transformer: SentenceTransformer
 ) -> list[int]:
-    """Predicts labels for new, unlabeled sentences using trained sentence-transformer embedding model"""
+    """Predicts labels for sentences using trained sentence-transformer embedding model"""
     sentences_embedded = sent_transformer.encode(sentences)
 
     y_pred = embed_model.predict(sentences_embedded)
@@ -39,9 +39,5 @@ if __name__ == "__main__":
     predictions = predict_labels(model, vectorizer, sentences)
     embed_predictions = predict_labels_embed(embed_model, sentences, sent_transformer)
 
-    for sentence, tfidf_pred, embed_pred in zip(
-        sentences, predictions, embed_predictions
-    ):
-        print(
-            f"TF-IDF: {label_key[tfidf_pred]} | Embedding: {label_key[embed_pred]} | {sentence}"
-        )
+    for sentence, tfidf_pred, embed_pred in zip(sentences, predictions, embed_predictions):
+        print(f"TF-IDF: {label_key[tfidf_pred]} | Embedding: {label_key[embed_pred]} | {sentence}")

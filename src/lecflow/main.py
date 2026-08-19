@@ -13,9 +13,7 @@ from .topics.cluster import (
 from .transcript import filter_transcript, load_transcript, split_into_sentences
 
 
-def full_pipeline(
-    raw_transcript_txt: str, housekeeping_model, sent_transformer
-) -> tuple[str, str]:
+def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer) -> tuple[str, str]:
     """Runs full lecture processing pipeline. Returns filtered
     transcript and lecture notes."""
     # Load and clean transcript
@@ -23,24 +21,16 @@ def full_pipeline(
     sentences = split_into_sentences(filtered)
 
     # Use pre-trained LR classifier (embed) for housekeeping
-    embed_predictions = predict_labels_embed(
-        housekeeping_model, sentences, sent_transformer
-    )
+    embed_predictions = predict_labels_embed(housekeeping_model, sentences, sent_transformer)
 
     content_sentences = [
-        sentence
-        for sentence, prediction in zip(sentences, embed_predictions)
-        if prediction == 0
+        sentence for sentence, prediction in zip(sentences, embed_predictions) if prediction == 0
     ]
     housekeeping_sentences = [
-        sentence
-        for sentence, prediction in zip(sentences, embed_predictions)
-        if prediction == 1
+        sentence for sentence, prediction in zip(sentences, embed_predictions) if prediction == 1
     ]
 
-    (_, cluster_labels) = sentence_embedding_cluster_train(
-        content_sentences, sent_transformer, k=4
-    )
+    (_, cluster_labels) = sentence_embedding_cluster_train(content_sentences, sent_transformer, k=4)
     blocks = group_by_cluster(content_sentences, cluster_labels)
 
     topic_labels = {}
@@ -59,9 +49,7 @@ def main() -> None:
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
     housekeeping_model = load_embed_model(Path("models"))
 
-    filtered, notes = full_pipeline(
-        raw_transcript_txt, housekeeping_model, sent_transformer
-    )
+    filtered, notes = full_pipeline(raw_transcript_txt, housekeeping_model, sent_transformer)
 
     print("Filtered transcript:")
     print(filtered)

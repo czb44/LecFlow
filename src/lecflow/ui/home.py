@@ -26,9 +26,7 @@ else:
 
 if file:
     file_name = Path(file.name).stem
-    name = " ".join(
-        Path(file.name).stem.replace("_", " ").replace("-", " ").split()
-    ).title()
+    name = " ".join(Path(file.name).stem.replace("_", " ").replace("-", " ").split()).title()
     st.write(f"Lecture: {name}")
 
     if st.button("Generate Notes"):
@@ -38,12 +36,12 @@ if file:
             else:
                 # Whisper requires a file_path - use temporary path
                 temp_path = Path(f"data/sample/temp_{file.name}")
-                temp_audio_path = None  # initialize as None in case finally runs before successful assignment
+                temp_audio_path = (
+                    None  # initialize as None in case finally runs before successful assignment
+                )
 
                 try:
-                    temp_path.parent.mkdir(
-                        parents=True, exist_ok=True
-                    )  # make directories if DNE
+                    temp_path.parent.mkdir(parents=True, exist_ok=True)  # make directories if DNE
                     temp_path.write_bytes(file.read())
 
                     if upload_type == "Video":
@@ -52,9 +50,7 @@ if file:
                     else:  # already have audio
                         temp_audio_path = temp_path
 
-                    raw_transcript_txt = get_audio_transcription(
-                        temp_audio_path, audio_model
-                    )
+                    raw_transcript_txt = get_audio_transcription(temp_audio_path, audio_model)
 
                 finally:  # temporary files deleted even with error
                     if (

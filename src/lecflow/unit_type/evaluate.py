@@ -40,11 +40,10 @@ def show_misclassified(
             ct += 1
 
 
-def evaluate_embed_model(
-    embed_model, sent_transformer, x_test, y_test, output_path
-) -> None:
-    """Analyze sentence-trasnsformer embedding model performance with accuracy, classification report,
-    and confusion matrix. Plots and saves confusion matrix to output path"""
+def evaluate_embed_model(embed_model, sent_transformer, x_test, y_test, output_path) -> None:
+    """Analyze sentence-transformer embedding model performance with accuracy,
+    classification report, and confusion matrix.
+    Plots and saves confusion matrix to output path"""
     sentences_embedded = sent_transformer.encode(x_test)
 
     y_pred = embed_model.predict(sentences_embedded)

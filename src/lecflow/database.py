@@ -1,14 +1,16 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
-from sqlalchemy import Column, DateTime, Integer, String, create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import DateTime, String, create_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
 # Initialize SQLite --> lecflow.db
 engine = create_engine("sqlite:///db/lecflow.db")
 
+
 # Initialize base class for models to inherit from
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class Lecture(Base):
@@ -16,11 +18,14 @@ class Lecture(Base):
 
     __tablename__ = "lectures"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-    notes_path = Column(String, nullable=False)
-    transcript_path = Column(String, nullable=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    notes_path: Mapped[str] = mapped_column(String, nullable=False)
+    transcript_path: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=lambda: datetime.now(UTC),
+    )
 
 
 Base.metadata.create_all(engine)  # build table
@@ -32,9 +37,7 @@ def save_lecture(name: str, notes_path: str, transcript_path: str) -> int:
     """Saves a new lecture to the database, return its id"""
     session = SessionLocal()
     try:
-        lecture = Lecture(
-            name=name, notes_path=notes_path, transcript_path=transcript_path
-        )
+        lecture = Lecture(name=name, notes_path=notes_path, transcript_path=transcript_path)
         session.add(lecture)
         session.commit()
         lecture_id = lecture.id
@@ -91,9 +94,7 @@ def del_lecture(lecture_id: int) -> None:
 
 
 if __name__ == "__main__":
-    save_lecture(
-        "test_lecture", "outputs/notes/test.md", "outputs/transcripts/test.txt"
-    )
+    save_lecture("test_lecture", "outputs/notes/test.md", "outputs/transcripts/test.txt")
     lectures = get_all_lectures()
     for lec in lectures:
         print(lec.id, lec.name, lec.created_at)

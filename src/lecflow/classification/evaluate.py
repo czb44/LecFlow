@@ -60,11 +60,10 @@ def evaluate_model(model, vectorizer, x_test, y_test, output_path) -> None:
     plt.close()
 
 
-def evaluate_embed_model(
-    embed_model, sent_transformer, x_test, y_test, output_path
-) -> None:
-    """Analyze sentence-trasnsformer embedding model performance with accuracy, classification report,
-    and confusion matrix. Plots and saves confusion matrix to output path"""
+def evaluate_embed_model(embed_model, sent_transformer, x_test, y_test, output_path) -> None:
+    """Analyze sentence-transformer embedding model performance with accuracy,
+    classification report, and confusion matrix.
+    Plots and saves confusion matrix to output path"""
     sentences_embedded = sent_transformer.encode(x_test)
 
     y_pred = embed_model.predict(sentences_embedded)
@@ -98,4 +97,4 @@ if __name__ == "__main__":
     evaluate_model(model, vectorizer, x_hard, y_hard, output_path)
 
     output_path = Path("outputs/confusion_matrix_hard_embed.png")
-    evaluate_embed_model(embed_model, x_hard, y_hard, output_path)
+    evaluate_embed_model(embed_model, sent_transformer, x_hard, y_hard, output_path)
