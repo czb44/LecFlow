@@ -8,16 +8,18 @@ from lecflow.transcript import (
 
 def test_load_transcript(tmp_path):
     raw_transcript_text = "Today we will be learning Bayes Rule."
-    
+
     file_path = tmp_path / "short_test_lecture.txt"
     file_path.write_text(raw_transcript_text)
     result = load_transcript(file_path)
     assert result == raw_transcript_text
 
+
 def test_filter_transcript():
     test_str = "Lecture       One"
     result = filter_transcript(test_str)
     assert result == "Lecture One"
+
 
 def test_split_into_sentences():
     test_sentences = [
@@ -35,9 +37,10 @@ def test_split_into_sentences():
     result = split_into_sentences(test_block)
     assert result == test_sentences
 
+
 def test_save_transcript(tmp_path):
     transcript = "Test transcript"
     out_path = tmp_path / "transcript_save_test.txt"
     save_transcript(transcript, out_path)
     assert out_path.exists()
-    assert out_path.read_text(encoding='utf-8') == transcript
+    assert out_path.read_text(encoding="utf-8") == transcript

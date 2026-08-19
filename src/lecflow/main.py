@@ -13,20 +13,34 @@ from .topics.cluster import (
 from .transcript import filter_transcript, load_transcript, split_into_sentences
 
 
-def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer) -> tuple[str, str]:
-    '''Runs full lecture processing pipeline. Returns filtered
-    transcript and lecture notes.'''
-    #Load and clean transcript
+def full_pipeline(
+    raw_transcript_txt: str, housekeeping_model, sent_transformer
+) -> tuple[str, str]:
+    """Runs full lecture processing pipeline. Returns filtered
+    transcript and lecture notes."""
+    # Load and clean transcript
     filtered = filter_transcript(raw_transcript_txt)
     sentences = split_into_sentences(filtered)
 
-    #Use pre-trained LR classifier (embed) for housekeeping 
-    embed_predictions = predict_labels_embed(housekeeping_model, sentences, sent_transformer)
+    # Use pre-trained LR classifier (embed) for housekeeping
+    embed_predictions = predict_labels_embed(
+        housekeeping_model, sentences, sent_transformer
+    )
 
-    content_sentences = [sentence for sentence, prediction in zip(sentences,embed_predictions) if prediction == 0]
-    housekeeping_sentences = [sentence for sentence, prediction in zip(sentences,embed_predictions) if prediction == 1]
-    
-    (_, cluster_labels) = sentence_embedding_cluster_train(content_sentences, sent_transformer, k=4)
+    content_sentences = [
+        sentence
+        for sentence, prediction in zip(sentences, embed_predictions)
+        if prediction == 0
+    ]
+    housekeeping_sentences = [
+        sentence
+        for sentence, prediction in zip(sentences, embed_predictions)
+        if prediction == 1
+    ]
+
+    (_, cluster_labels) = sentence_embedding_cluster_train(
+        content_sentences, sent_transformer, k=4
+    )
     blocks = group_by_cluster(content_sentences, cluster_labels)
 
     topic_labels = {}
@@ -34,27 +48,28 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
         topic_labels[cluster_num] = get_topic_labels(group_of_sents, sent_transformer)
 
     notes = generate_notes(blocks, topic_labels, housekeeping_sentences)
-    
-    return filtered, notes
 
+    return filtered, notes
 
 
 def main() -> None:
     file_path = Path("data/sample/lecture_2.txt")
     raw_transcript_txt = load_transcript(file_path)
 
-    sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
-    housekeeping_model = load_embed_model(Path('models'))
+    sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
+    housekeeping_model = load_embed_model(Path("models"))
 
-    filtered, notes = full_pipeline(raw_transcript_txt, housekeeping_model, sent_transformer)
-    
+    filtered, notes = full_pipeline(
+        raw_transcript_txt, housekeeping_model, sent_transformer
+    )
+
     print("Filtered transcript:")
     print(filtered)
 
     output_path = Path("outputs/notes/lecture_2_notes_v2_3.md")
-    save_notes(notes, output_path) 
-    print(f'Notes saved to: {output_path}')
+    save_notes(notes, output_path)
+    print(f"Notes saved to: {output_path}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

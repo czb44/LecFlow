@@ -15,7 +15,6 @@ def test_save_lecture(test_database, tmp_path):
     assert isinstance(lecture_id, int)
     assert length == 1
 
-    
 
 def test_get_all_lectures(test_database, tmp_path):
     name = "Test Lecture"
@@ -49,7 +48,7 @@ def test_del_lecture(test_database, tmp_path):
     name = "Test Lecture"
     notes_path = tmp_path / "test_notes.txt"
     transcript_path = tmp_path / "test_transcript.txt"
-    #Write files because del_lecture will aslos delete the file
+    # Write files because del_lecture will also delete the file
     notes_path.write_text("notes")
     transcript_path.write_text("transcript")
     lecture_id = database.save_lecture(name, str(notes_path), str(transcript_path))

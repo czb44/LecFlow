@@ -2,61 +2,66 @@ import re
 
 
 def is_definition(sentence: str) -> bool:
-    '''Determines if a sentence is an definition of a concept or idea'''
+    """Determines if a sentence is an definition of a concept or idea"""
     sentence = sentence.lower()
 
-    #Multi-word phrases: use basic substring check
-    def_cues = ['definition', 'known as', 'is called', 'means that', 'refers to', 'in other words']
+    # Multi-word phrases: use basic substring check
+    def_cues = [
+        "definition",
+        "known as",
+        "is called",
+        "means that",
+        "refers to",
+        "in other words",
+    ]
     for cue in def_cues:
         if cue in sentence:
             return True
-    
-    #Regrex to avoid mismatches within a word
-    return bool(re.search(r'\b(define|denoted|called)\b', sentence))
 
+    # Regrex to avoid mismatches within a word
+    return bool(re.search(r"\b(define|denoted|called)\b", sentence))
 
 
 def is_example(sentence: str) -> bool:
-    '''Determines if a sentence is an example of a concept or idea'''
+    """Determines if a sentence is an example of a concept or idea"""
     sentence = sentence.lower()
 
-    example_cues = ['example', 'for instance', "let's say", "let's work through"]
+    example_cues = ["example", "for instance", "let's say", "let's work through"]
     for cue in example_cues:
         if cue in sentence:
             return True
-    
-    return bool(re.search(r'\b(suppose|imagine|consider)\b', sentence))
+
+    return bool(re.search(r"\b(suppose|imagine|consider)\b", sentence))
 
 
 def is_question(sentence: str) -> bool:
-    '''Determines if a sentence is an question or practice problem of a concept or idea'''
+    """Determines if a sentence is an question or practice problem of a concept or idea"""
     sentence = sentence.lower()
 
-    if sentence.strip().endswith('?') or sentence.strip().startswith('why'):
+    if sentence.strip().endswith("?") or sentence.strip().startswith("why"):
         return True
 
-    question_cues = ['what is', 'how many', 'how do', "let's solve", 'who can tell me']
+    question_cues = ["what is", "how many", "how do", "let's solve", "who can tell me"]
     for cue in question_cues:
         if cue in sentence:
             return True
-    
-    return bool(re.search(r'\b(derive|calculate|compute|find)\b', sentence))
 
-    
+    return bool(re.search(r"\b(derive|calculate|compute|find)\b", sentence))
+
 
 def classify_unit_type(sentence: str) -> str:
-    '''Classifies a sentence as 'question', 'definition', 'example', or 'explanation' as a fallback'''
+    """Classifies a sentence as 'question', 'definition', 'example', or 'explanation' as a fallback"""
     if is_question(sentence):
-        return 'question'
+        return "question"
     elif is_definition(sentence):
-        return 'definition'
+        return "definition"
     elif is_example(sentence):
-        return 'example'
+        return "example"
     else:
-        return 'explanation'
+        return "explanation"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_sentences = [
         "In many problems we start with an initial idea, called a prior, and then gain new evidence.",
         "Suppose a disease is rare, affecting only one percent of the population.",
