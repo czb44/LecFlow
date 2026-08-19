@@ -90,11 +90,12 @@ if __name__ == "__main__":
     embed_model = load_embed_model(Path("models"))
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
 
-    hard_data = load_data(Path("data/labeled/hard_housekeeping_dataset.csv"))
-    x_hard, y_hard = split_sentences_labels(hard_data)
+    # New benchmark
+    benchmark = load_data(Path("data/labeled/housekeeping_benchmark_reviewed.csv"))
+    x_test, y_test = split_sentences_labels(benchmark)
 
-    output_path = Path("outputs/confusion_matrix_hard_normal.png")
-    evaluate_model(model, vectorizer, x_hard, y_hard, output_path)
+    output_path_1 = Path("outputs/confusion_matrices/benchmark_reviewed_tfidf.png")
+    evaluate_model(model, vectorizer, x_test, y_test, output_path_1)
 
-    output_path = Path("outputs/confusion_matrix_hard_embed.png")
-    evaluate_embed_model(embed_model, sent_transformer, x_hard, y_hard, output_path)
+    output_path_2 = Path("outputs/confusion_matrices/benchmark_reviewed_embed.png")
+    evaluate_embed_model(embed_model, sent_transformer, x_test, y_test, output_path_2)
