@@ -24,11 +24,11 @@ def generate_notes(
         for sentence in block:
             unit_type = classify_unit_type(sentence)
             if unit_type == "example":
-                body += f"*Example:* {sentence}\n"
+                body += f"- *Example:* {sentence}\n"
             elif unit_type == "question":
-                body += f"*Question:* {sentence}\n"
+                body += f"- *Question:* {sentence}\n"
             elif unit_type == "definition":
-                body += f"**Definition:** {sentence}\n"
+                body += f"- **Definition:** {sentence}\n"
             elif unit_type == "explanation":  # no label for content
                 body += f"- {sentence}\n"
         body += "\n\n"
