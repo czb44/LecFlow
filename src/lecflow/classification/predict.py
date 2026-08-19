@@ -1,6 +1,9 @@
 from pathlib import Path
+
 from sentence_transformers import SentenceTransformer
-from .data import label_key, load_model, load_embed_model
+
+from .data import label_key, load_embed_model, load_model
+
 
 def predict_labels(model, vectorizer, sentences: list[str]) -> list[int]:
     '''Predicts labels for new, unlabeled sentences using trained model and vectorizer'''

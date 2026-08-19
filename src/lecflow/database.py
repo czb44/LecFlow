@@ -1,6 +1,7 @@
+from datetime import UTC, datetime
 from pathlib import Path
-from datetime import datetime, UTC
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
+
+from sqlalchemy import Column, DateTime, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 #Initialize SQLite --> lecflow.db

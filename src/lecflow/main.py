@@ -1,13 +1,16 @@
 from pathlib import Path
-from .transcript import load_transcript, filter_transcript, split_into_sentences
-from .data import load_data, split_sentences_labels
-from .classification.data import label_key, load_model, load_embed_model
-from .unit_type.rules import classify_unit_type
-from .classification.predict import predict_labels, predict_labels_embed
-from .notes import generate_notes, save_notes
-from .topics.cluster import train_clusters, group_by_cluster, sentence_embedding_cluster_train, get_topic_labels
+
 from sentence_transformers import SentenceTransformer
 
+from .classification.data import load_embed_model
+from .classification.predict import predict_labels_embed
+from .notes import generate_notes, save_notes
+from .topics.cluster import (
+    get_topic_labels,
+    group_by_cluster,
+    sentence_embedding_cluster_train,
+)
+from .transcript import filter_transcript, load_transcript, split_into_sentences
 
 
 def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer) -> tuple[str, str]:
@@ -23,7 +26,7 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
     content_sentences = [sentence for sentence, prediction in zip(sentences,embed_predictions) if prediction == 0]
     housekeeping_sentences = [sentence for sentence, prediction in zip(sentences,embed_predictions) if prediction == 1]
     
-    (cluster_model, cluster_labels) = sentence_embedding_cluster_train(content_sentences, sent_transformer, k=4)
+    (_, cluster_labels) = sentence_embedding_cluster_train(content_sentences, sent_transformer, k=4)
     blocks = group_by_cluster(content_sentences, cluster_labels)
 
     topic_labels = {}
@@ -45,6 +48,9 @@ def main() -> None:
 
     filtered, notes = full_pipeline(raw_transcript_txt, housekeeping_model, sent_transformer)
     
+    print("Filtered transcript:")
+    print(filtered)
+
     output_path = Path("outputs/notes/lecture_2_notes_v2_3.md")
     save_notes(notes, output_path) 
     print(f'Notes saved to: {output_path}')

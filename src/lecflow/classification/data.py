@@ -1,10 +1,10 @@
-import joblib
 from pathlib import Path
-from sklearn.linear_model import LogisticRegression
-from sklearn.feature_extraction.text import TfidfVectorizer
-import pandas as pd
-from ..data import load_data, check_balanced, split_sentences_labels
 
+import joblib
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+
+from ..data import check_balanced, load_data, split_sentences_labels
 
 label_key = {0: 'content', 1: 'housekeeping'}
 

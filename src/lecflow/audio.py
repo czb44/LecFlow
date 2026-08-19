@@ -1,6 +1,8 @@
-from pathlib import Path
-from faster_whisper import WhisperModel
 import subprocess
+from pathlib import Path
+
+from faster_whisper import WhisperModel
+
 
 def load_audio_model(model_size: str = 'base') -> WhisperModel:
     '''Load Whisper transcription model'''
@@ -17,7 +19,7 @@ def get_audio_transcription(audio_path: Path, audio_model: WhisperModel) -> str:
     if audio_path.suffix.lower() not in allowed_types:
         raise ValueError(f"Audio type '{audio_path.suffix}' is unsupported. Please convert to a supported type: '.wav', '.mp3', '.m4a'")
     
-    segments, info = audio_model.transcribe(audio_path)
+    segments, _ = audio_model.transcribe(audio_path)
 
     cleaned_segments = [segment.text.strip() for segment in segments]
     text = ' '.join(cleaned_segments)

@@ -1,10 +1,13 @@
 from pathlib import Path
-import joblib #save and reload trained sklearn model
+
+import joblib  #save and reload trained sklearn model
+import pandas as pd
+from sentence_transformers import SentenceTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sentence_transformers import SentenceTransformer
-import pandas as pd
-from ..data import load_data, split_sentences_labels, check_balanced
+
+from ..data import check_balanced, load_data, split_sentences_labels
+
 
 def train_classifier_embeddings(sentences: list[str], labels: list[int]) -> tuple[LogisticRegression, SentenceTransformer, tuple[list[str], list[int]]]:
     '''Sentence-transforemer embeddings + Logistic Regression pipeline'''

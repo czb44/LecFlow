@@ -1,12 +1,14 @@
 from pathlib import Path
+
 from sentence_transformers import SentenceTransformer
-from .data import unit_type_labels, load_embed_model_ut
+
+from .data import load_embed_model_ut
 
 
 def predict_labels_embed_ut(embed_model, sent_transformer, sentences: list[str]) -> list[int]:
     '''Predicts labels for new, unlabeled sentences using trained sentence-transformer embedding model'''
     sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
-    sentences_embedded = embedding_transformer.encode(sentences)
+    sentences_embedded = sent_transformer.encode(sentences)
     
     y_pred = embed_model.predict(sentences_embedded)
 

@@ -1,5 +1,7 @@
 from pathlib import Path
+
 from .unit_type.rules import classify_unit_type
+
 
 def generate_notes(blocks: dict[int, list[str]], topic_labels: dict[int, str], housekeeping_sentences: list[str]) -> str:
     '''Converts cleaned transcript to a Markdown-formatted string'''
@@ -27,7 +29,7 @@ def generate_notes(blocks: dict[int, list[str]], topic_labels: dict[int, str], h
                 body += f'- {sentence}\n'
         body += '\n\n'
 
-    toc += f'- [Housekeeping](#housekeeping)\n\n\n'
+    toc += '- [Housekeeping](#housekeeping)\n\n\n'
 
     housekeeping_head = '## Housekeeping\n\n'
     housekeeping_body = ''

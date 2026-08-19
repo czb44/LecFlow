@@ -1,5 +1,10 @@
-from pathlib import Path
-from lecflow.transcript import load_transcript, filter_transcript, split_into_sentences, save_transcript
+from lecflow.transcript import (
+    filter_transcript,
+    load_transcript,
+    save_transcript,
+    split_into_sentences,
+)
+
 
 def test_load_transcript(tmp_path):
     raw_transcript_text = "Today we will be learning Bayes Rule."

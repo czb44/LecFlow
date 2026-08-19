@@ -1,7 +1,8 @@
-import streamlit as st
 from pathlib import Path
-from lecflow.database import get_lecture
 
+import streamlit as st
+
+from lecflow.database import get_lecture
 
 lecture_id = st.session_state.get('selected_lecture')
 

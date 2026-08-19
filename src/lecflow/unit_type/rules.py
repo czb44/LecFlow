@@ -1,5 +1,6 @@
 import re
 
+
 def is_definition(sentence: str) -> bool:
     '''Determines if a sentence is an definition of a concept or idea'''
     sentence = sentence.lower()
@@ -11,9 +12,8 @@ def is_definition(sentence: str) -> bool:
             return True
     
     #Regrex to avoid mismatches within a word
-    if re.search(r'\b(define|denoted|called)\b', sentence):
-        return True
-    return False
+    return bool(re.search(r'\b(define|denoted|called)\b', sentence))
+
 
 
 def is_example(sentence: str) -> bool:
@@ -25,17 +25,14 @@ def is_example(sentence: str) -> bool:
         if cue in sentence:
             return True
     
-    if re.search(r'\b(suppose|imagine|consider)\b', sentence):
-        return True
-    return False
-    
+    return bool(re.search(r'\b(suppose|imagine|consider)\b', sentence))
+
+
 def is_question(sentence: str) -> bool:
     '''Determines if a sentence is an question or practice problem of a concept or idea'''
     sentence = sentence.lower()
 
-    if sentence.strip().endswith('?'):
-        return True
-    if sentence.strip().startswith('why'):
+    if sentence.strip().endswith('?') or sentence.strip().startswith('why'):
         return True
 
     question_cues = ['what is', 'how many', 'how do', "let's solve", 'who can tell me']
@@ -43,9 +40,8 @@ def is_question(sentence: str) -> bool:
         if cue in sentence:
             return True
     
-    if re.search(r'\b(derive|calculate|compute|find)\b', sentence):
-        return True
-    return False
+    return bool(re.search(r'\b(derive|calculate|compute|find)\b', sentence))
+
     
 
 def classify_unit_type(sentence: str) -> str:

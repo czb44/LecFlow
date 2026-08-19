@@ -1,5 +1,6 @@
 from pathlib import Path
-from lecflow.audio import video_to_audio, get_audio_transcription
+
+from lecflow.audio import get_audio_transcription, video_to_audio
 
 
 def test_video_to_audio(tmp_path):

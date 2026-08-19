@@ -1,5 +1,6 @@
+from lecflow import notes
 from lecflow.notes import generate_notes, save_notes
-import lecflow.notes as notes
+
 
 def test_generate_notes(monkeypatch):
     #use monkeypatch to temporarily replace classify_unity_type w/ deterministic definition labeling

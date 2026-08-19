@@ -1,5 +1,6 @@
 from lecflow.unit_type.rules import classify_unit_type
 
+
 def test_classify_unit_type():
     prediction = ["definition", "example", "question", "explanation"]
     result = []

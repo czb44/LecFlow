@@ -1,5 +1,7 @@
 from pathlib import Path
-import spacy #NLP to splice clean transcript
+
+import spacy  #NLP to splice clean transcript
+
 
 def load_transcript(file_path: Path) -> str:
     ''' Loads transcript and extracts its contents'''

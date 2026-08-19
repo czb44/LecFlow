@@ -1,10 +1,17 @@
-import joblib
 from pathlib import Path
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
-from sentence_transformers import SentenceTransformer
+
 import matplotlib.pyplot as plt
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics import (
+    ConfusionMatrixDisplay,
+    accuracy_score,
+    classification_report,
+    confusion_matrix,
+)
+
 from ..data import load_data, split_sentences_labels
-from.data import label_key, load_model, load_embed_model
+from .data import label_key, load_embed_model, load_model
+
 data_labels = [label_key[0], label_key[1]]
 
 def show_misclassified(x_test: list[str], y_test: list[int], y_pred: list[int], num_examples: int = 50) -> None:

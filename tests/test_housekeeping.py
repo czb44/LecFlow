@@ -1,4 +1,3 @@
-from pathlib import Path
 from lecflow.classification.predict import predict_labels_embed
 
 

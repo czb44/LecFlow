@@ -1,10 +1,17 @@
-import joblib
 from pathlib import Path
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
-from sentence_transformers import SentenceTransformer
+
 import matplotlib.pyplot as plt
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics import (
+    ConfusionMatrixDisplay,
+    accuracy_score,
+    classification_report,
+    confusion_matrix,
+)
+
 from ..data import load_data, split_sentences_labels
-from.data import unit_type_labels, load_embed_model_ut
+from .data import load_embed_model_ut, unit_type_labels
+
 unit_type_labels_key = [unit_type_labels[0], unit_type_labels[1], unit_type_labels[2], unit_type_labels[3]]
 
 def show_misclassified(x_test: list[str], y_test: list[int], y_pred: list[int], num_examples: int = 50) -> None:
@@ -27,7 +34,7 @@ def show_misclassified(x_test: list[str], y_test: list[int], y_pred: list[int], 
 def evaluate_embed_model(embed_model, sent_transformer, x_test, y_test, output_path) -> None:
     '''Analyze sentence-trasnsformer embedding model performance with accuracy, classification report, 
     and confusion matrix. Plots and saves confusion matrix to output path'''
-    sentences_embedded = embedding_transformer.encode(x_test)
+    sentences_embedded = sent_transformer.encode(x_test)
 
     y_pred = embed_model.predict(sentences_embedded)
     

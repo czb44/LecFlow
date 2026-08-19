@@ -1,13 +1,15 @@
-import pytest
 from pathlib import Path
-from sentence_transformers import SentenceTransformer
-from lecflow.data import load_embed_model
-from lecflow.audio import load_audio_model
 
-from lecflow.database import Base
-import lecflow.database as database
+import pytest
+from sentence_transformers import SentenceTransformer
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from lecflow import database
+from lecflow.audio import load_audio_model
+from lecflow.data import load_embed_model
+from lecflow.database import Base
+
 
 @pytest.fixture(scope="session")
 def sent_transformer():

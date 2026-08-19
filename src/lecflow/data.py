@@ -1,9 +1,9 @@
-import joblib
 from pathlib import Path
-from sklearn.linear_model import LogisticRegression
-from sklearn.feature_extraction.text import TfidfVectorizer
-import pandas as pd
 
+import joblib
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
 
 label_key = {0: 'content', 1: 'housekeeping'}
 

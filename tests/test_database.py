@@ -1,5 +1,6 @@
+from lecflow import database
 from lecflow.database import Lecture
-import lecflow.database as database
+
 
 def test_save_lecture(test_database, tmp_path):
     name = "Test Lecture"
@@ -27,6 +28,7 @@ def test_get_all_lectures(test_database, tmp_path):
     assert len(lectures) == 1
     assert isinstance(lectures[0], Lecture)
     assert lectures[0].name == name
+    assert lectures[0].id == lecture_id
 
 
 def test_get_lecture(test_database, tmp_path):

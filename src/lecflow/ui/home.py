@@ -1,12 +1,14 @@
-import streamlit as st
 from pathlib import Path
-from lecflow.models import load_all_models
+from uuid import uuid4
+
+import streamlit as st
+
+from lecflow.audio import get_audio_transcription, video_to_audio
 from lecflow.database import save_lecture
 from lecflow.main import full_pipeline
+from lecflow.models import load_all_models
 from lecflow.notes import save_notes
 from lecflow.transcript import save_transcript
-from lecflow.audio import get_audio_transcription, video_to_audio
-from uuid import uuid4
 
 housekeeping_model, sent_transformer, audio_model = load_all_models()
 
@@ -49,9 +51,8 @@ if file:
                     raw_transcript_txt = get_audio_transcription(temp_audio_path, audio_model)
                 
                 finally: #temporary files deleted even with error
-                    if temp_audio_path != temp_path: #seperate audio file
-                        if temp_audio_path and temp_audio_path.exists(): #exists on disk
-                            temp_audio_path.unlink()
+                    if temp_audio_path != temp_path and temp_audio_path and temp_audio_path.exists():
+                        temp_audio_path.unlink()
                     if temp_path.exists():
                         temp_path.unlink()
                     

@@ -1,9 +1,10 @@
 from pathlib import Path
+
 import streamlit as st
 from sentence_transformers import SentenceTransformer
-from lecflow.data import load_embed_model
-from lecflow.audio import load_audio_model
 
+from lecflow.audio import load_audio_model
+from lecflow.data import load_embed_model
 
 
 #Streamlit: Load all models once and cache

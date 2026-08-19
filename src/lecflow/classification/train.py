@@ -1,11 +1,14 @@
 from pathlib import Path
-import joblib #save and reload trained sklearn model
+
+import joblib  #save and reload trained sklearn model
+import pandas as pd
+from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sentence_transformers import SentenceTransformer
-import pandas as pd
-from ..data import load_data, split_sentences_labels, check_balanced
+
+from ..data import check_balanced, load_data, split_sentences_labels
+
 
 def train_classifier(sentences: list[str], labels: list[int]) -> tuple[LogisticRegression, TfidfVectorizer, tuple[list[str], list[int]]]:
     '''Create TF-IDF classifier + Logistic Regression pipeline'''
@@ -15,7 +18,6 @@ def train_classifier(sentences: list[str], labels: list[int]) -> tuple[LogisticR
     #Vectorize: learn vocab and TF-IDF weights
     vectorizer = TfidfVectorizer(stop_words='english') #remove stopwords
     x_train_vec = vectorizer.fit_transform(x_train) #fit on training
-    x_test_vec = vectorizer.transform(x_test)  
 
     model = LogisticRegression(max_iter=1000, class_weight='balanced') #compensate for skewed data
     model.fit(x_train_vec, y_train)

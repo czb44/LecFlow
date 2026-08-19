@@ -1,8 +1,9 @@
-import joblib
 from pathlib import Path
+
+import joblib
 from sklearn.linear_model import LogisticRegression
-import pandas as pd
-from ..data import load_data, check_balanced, split_sentences_labels
+
+from ..data import check_balanced, load_data, split_sentences_labels
 
 unit_type_labels = {0: 'definition', 1: 'example', 2: 'question', 3: 'explanation'}
 

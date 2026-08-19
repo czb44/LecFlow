@@ -1,12 +1,15 @@
-from pathlib import Path
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import KMeans
-from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
 from collections import defaultdict
-from ..transcript import load_transcript, filter_transcript, split_into_sentences
-import spacy
+from pathlib import Path
+
 import numpy as np
+import spacy
+from sentence_transformers import SentenceTransformer
+from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+from ..transcript import filter_transcript, load_transcript, split_into_sentences
+
 
 def train_clusters(sentences: list[str], k: int) -> tuple[TfidfVectorizer, KMeans, list[int]]:
     '''Vectorize sentences with TF-IDF classifier and cluster into K clusters with KMeans'''
