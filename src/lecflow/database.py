@@ -1,5 +1,5 @@
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, UTC
 from sqlalchemy import create_engine, Column, Integer, String, DateTime
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -17,7 +17,7 @@ class Lecture(Base):
     name = Column(String, nullable=False)
     notes_path = Column(String, nullable=False)
     transcript_path = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
 Base.metadata.create_all(engine) #build table
 

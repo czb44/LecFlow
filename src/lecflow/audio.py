@@ -23,7 +23,7 @@ def get_audio_transcription(audio_path: Path, audio_model: WhisperModel) -> str:
     text = ' '.join(cleaned_segments)
 
     if not text:
-        raise ValueError('No sppech detected in audio file. Inspect audio file then try again')
+        raise ValueError('No speech detected in audio file. Inspect audio file then try again')
 
     return text
 

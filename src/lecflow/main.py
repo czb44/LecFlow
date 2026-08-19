@@ -41,6 +41,7 @@ def main() -> None:
     raw_transcript_txt = load_transcript(file_path)
 
     sent_transformer = SentenceTransformer('all-MiniLM-L6-v2')
+    housekeeping_model = load_embed_model(Path('models'))
 
     filtered, notes = full_pipeline(raw_transcript_txt, housekeeping_model, sent_transformer)
     

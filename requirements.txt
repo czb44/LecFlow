@@ -8,3 +8,4 @@ sentence-transformers
 sqlalchemy
 streamlit
 faster-whisper
+pytest
