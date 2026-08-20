@@ -31,6 +31,9 @@ outputs/
 models/unit_type_embed_classifier.joblib
 models/housekeeping_classifier.joblib
 models/tfidf_vectorizer.joblib
+models/tfidf_vectorizer_v2.joblib
+models/housekeeping_classifier_v2.joblib
+
 
 #Database
 *.db

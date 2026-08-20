@@ -18,7 +18,7 @@ def load_model(model_dir: Path) -> tuple[LogisticRegression, TfidfVectorizer]:
 
 def load_embed_model(model_dir: Path) -> LogisticRegression:
     """Loads a trained LogisticRegression model from sentence-transformer embeddings"""
-    embed_model = joblib.load(model_dir / "housekeeping_embed_classifier.joblib")
+    embed_model = joblib.load(model_dir / "housekeeping_embed_classifier_v2.joblib")
     return embed_model
 
 

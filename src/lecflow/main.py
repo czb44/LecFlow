@@ -43,7 +43,7 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
 
 
 def main() -> None:
-    file_path = Path("data/sample/lecture_2.txt")
+    file_path = Path("data/sample/mit_18_650_full_lecture_1.txt")
     raw_transcript_txt = load_transcript(file_path)
 
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
@@ -54,7 +54,7 @@ def main() -> None:
     print("Filtered transcript:")
     print(filtered)
 
-    output_path = Path("outputs/notes/lecture_2_notes_v2_3.md")
+    output_path = Path("outputs/notes/mit_18_650_full_lecture_1_notes.md")
     save_notes(notes, output_path)
     print(f"Notes saved to: {output_path}")
 
