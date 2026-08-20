@@ -30,8 +30,13 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
         sentence for sentence, prediction in zip(sentences, embed_predictions) if prediction == 1
     ]
 
-    (_, cluster_labels) = sentence_embedding_cluster_train(content_sentences, sent_transformer, k=4)
-    blocks = group_by_cluster(content_sentences, cluster_labels)
+    if len(content_sentences) < 3:
+        blocks = {0: content_sentences}
+    else:
+        (model, cluster_labels) = sentence_embedding_cluster_train(
+            content_sentences, sent_transformer
+        )
+        blocks = group_by_cluster(content_sentences, cluster_labels)
 
     topic_labels = {}
     for cluster_num, group_of_sents in blocks.items():
@@ -43,7 +48,7 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
 
 
 def main() -> None:
-    file_path = Path("data/sample/mit_18_650_full_lecture_1.txt")
+    file_path = Path("data/sample/lecture_2.txt")
     raw_transcript_txt = load_transcript(file_path)
 
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
@@ -51,10 +56,7 @@ def main() -> None:
 
     filtered, notes = full_pipeline(raw_transcript_txt, housekeeping_model, sent_transformer)
 
-    print("Filtered transcript:")
-    print(filtered)
-
-    output_path = Path("outputs/notes/mit_18_650_full_lecture_1_notes.md")
+    output_path = Path("outputs/notes/lecture_2_notes_2.md")
     save_notes(notes, output_path)
     print(f"Notes saved to: {output_path}")
 

@@ -6,6 +6,7 @@ import spacy
 from sentence_transformers import SentenceTransformer
 from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import silhouette_score
 from sklearn.metrics.pairwise import cosine_similarity
 
 from ..transcript import filter_transcript, load_transcript, split_into_sentences
@@ -25,15 +26,19 @@ def train_clusters(sentences: list[str], k: int) -> tuple[TfidfVectorizer, KMean
 
 
 def sentence_embedding_cluster_train(
-    sentences: list[str], sent_transformer: SentenceTransformer, k: int
+    sentences: list[str],
+    sent_transformer: SentenceTransformer,
+    k: int | None = None,
 ) -> tuple[KMeans, list[int]]:
     """Vectorize sentences with sentence embeddings and cluster into K clusters with KMeans"""
     # Edge case handling: 0 or <k content sentences
     if not sentences:
         raise ValueError("Cannot cluster: 0 content sentences found")
-    k = min(k, len(sentences))
 
     embeddings = sent_transformer.encode(sentences)
+
+    if k is None:
+        k = find_best_k(embeddings)
 
     model = KMeans(n_clusters=k, random_state=2)
     model.fit(embeddings)
@@ -84,8 +89,41 @@ def get_topic_labels(sentences: list[str], sent_transformer: SentenceTransformer
     return candidate_nouns[best_index]
 
 
+def find_best_k(embeddings, min_k: int = 2, max_k: int = 20) -> int:
+    """Determine k, the number of clusters, using silhouette score."""
+    # Clusters cannot outnumber embeddings - 1 for silhouette
+    max_k = min(
+        max_k, max(2, len(embeddings) // 10), len(embeddings) - 1
+    )  # ~ 1 cluster per 10 sentences allowed
+
+    if max_k < min_k:
+        return 1
+
+    scores = []
+    for k in range(min_k, max_k + 1):
+        model = KMeans(n_clusters=k, random_state=2)
+        labels = model.fit_predict(embeddings)
+        if len(set(labels)) < 2:  # silhouette needs >= 2 unique clusters
+            continue
+
+        score = silhouette_score(embeddings, labels)
+        scores.append((k, score))
+
+    if not scores:
+        return 1
+
+    # Near-best / tolerance: avoid overclustering long lectures
+    best_score = max(score for _, score in scores)
+    tol_level = 0.005
+    for k, score in scores:
+        if score >= best_score - tol_level:
+            return k
+
+    return scores[-1][0]
+
+
 if __name__ == "__main__":
-    file_path = Path("data/sample/lecture_2.txt")
+    file_path = Path("data/sample/mit_18_650_full_lecture_1.txt")
 
     transcript = load_transcript(file_path)
     filtered = filter_transcript(transcript)
@@ -94,22 +132,15 @@ if __name__ == "__main__":
     # load sentence transformer
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
 
-    for k in range(4, 5):
-        (vectorizer, model, cluster_labels) = train_clusters(sentences, k)
-        groups = group_by_cluster(sentences, cluster_labels)
-        print(f"K = {k}")
-        for cluster_number, sentences_grouped in groups.items():
-            print(f"Cluster {cluster_number}:")
-            for sentence in sentences_grouped:
-                print(f" - {sentence}")
-        print("\n--------------------------\n")
+    (model, cluster_labels) = sentence_embedding_cluster_train(sentences, sent_transformer)
 
-    for k in range(4, 5):
-        (model, cluster_labels) = sentence_embedding_cluster_train(sentences, sent_transformer, k)
-        groups = group_by_cluster(sentences, cluster_labels)
-        print(f"K = {k}")
-        for cluster_number, sentences_grouped in groups.items():
-            print(f"Cluster {cluster_number}:")
-            for sentence in sentences_grouped:
-                print(f" - {sentence}")
-        print("\n--------------------------\n")
+    print(f"K Chosen: {model.n_clusters}")
+
+    groups = group_by_cluster(sentences, cluster_labels)
+
+    for cluster_number, sentences_grouped in groups.items():
+        print(f"Cluster {cluster_number}:")
+        for ct, sentence in enumerate(sentences_grouped):
+            print(f" - {sentence}")
+            if ct >= 3:
+                break
