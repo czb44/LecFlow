@@ -7,8 +7,7 @@ from .classification.predict import predict_labels_embed
 from .notes import generate_notes, save_notes
 from .topics.cluster import (
     get_topic_labels,
-    group_adjacent,
-    sentence_embedding_cluster_train,
+    segment_by_similarity,
 )
 from .transcript import (
     filter_transcript,
@@ -41,10 +40,7 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
     if len(content_sentences) < 3:
         blocks = {0: content_sentences}
     else:
-        (model, cluster_labels) = sentence_embedding_cluster_train(
-            content_sentences, sent_transformer
-        )
-        adj_blocks = group_adjacent(content_sentences, cluster_labels)
+        adj_blocks = segment_by_similarity(content_sentences, sent_transformer)
 
         blocks = {}
         for block_idx, block in enumerate(adj_blocks):
@@ -60,7 +56,7 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
 
 
 def main() -> None:
-    file_path = Path("data/sample/mit_18_650_full_lecture_1.txt")
+    file_path = Path("outputs/notes/6.006_Lecture_5_notes.md")
     raw_transcript_txt = load_transcript(file_path)
 
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
@@ -68,7 +64,7 @@ def main() -> None:
 
     filtered, notes = full_pipeline(raw_transcript_txt, housekeeping_model, sent_transformer)
 
-    output_path = Path("outputs/notes/mit_18_650_full_lecture_1_notes_4.md")
+    output_path = Path("outputs/notes/6.006_Lecture_5_notes_notes_6.md")
     save_notes(notes, output_path)
     print(f"Notes saved to: {output_path}")
 

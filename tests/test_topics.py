@@ -3,7 +3,9 @@ from lecflow.topics.cluster import (
     get_candidate_phrases,
     get_topic_labels,
     group_by_cluster,
+    segment_by_similarity,
     sentence_embedding_cluster_train,
+    split_large_blocks,
 )
 
 
@@ -151,3 +153,64 @@ def test_sentence_embedding_cluster_train_best_k(sent_transformer):
     assert len(cluster_labels) == len(sentences)
     assert isinstance(model.n_clusters, int)
     assert 1 <= model.n_clusters < len(sentences)
+
+
+def test_segment_by_similarity_blank(sent_transformer):
+    sentences = []
+    result = segment_by_similarity(sentences, sent_transformer)
+    assert result == []
+
+
+def test_segment_by_similarity_short(sent_transformer):
+    sentences = [
+        "Bayes rule updates prior probabilities.",
+        "Posterior probability incorporates new evidence.",
+        "Conditional independence simplifies probability models.",
+    ]
+    result = segment_by_similarity(sentences, sent_transformer)
+    assert [sentences] == result
+
+
+def test_segment_by_similarity(sent_transformer):
+    sentences = [
+        "Bayes rule updates prior probabilities.",
+        "Posterior probability incorporates new evidence.",
+        "Conditional independence simplifies probability models.",
+        "Hash tables support fast lookup.",
+        "Hash functions map keys to array locations.",
+        "Sorting algorithms arrange elements into order.",
+        "DNA is genetic information.",
+        "Genes encode biological information.",
+        "Proteins are produced from genetic instructions.",
+        "Mutations can change DNA sequences.",
+        "Probability models uncertainty.",
+        "Random variables describe uncertain outcomes.",
+    ]
+    result = segment_by_similarity(sentences, sent_transformer)
+
+    flat = [sentence for block in result for sentence in block]
+    assert flat == sentences
+
+    assert len(result) >= 1  # at least one block made
+
+    assert all(len(block) > 0 for block in result)  # no empty blocks
+
+
+def test_split_large_blocks(sent_transformer):
+    block = [i for i in range(60)]
+    result = split_large_blocks([block], sent_transformer, max_block_size=20)
+    flat = [sentence for group in result for sentence in group]
+    assert flat == block
+
+    assert all(len(group) <= 20 for group in result)  # all under max length
+
+
+def test_split_large_blocks_small(sent_transformer):
+    sentences = [
+        ["Bayes updates prior probabilities.", "Posterior incorporates new evidence."],
+        ["Hash tables support fast lookup.", "Hash functions map keys to array locations."],
+    ]
+    result = split_large_blocks(sentences, sent_transformer, max_block_size=10)
+
+    # small blocks so nothing chnages
+    assert result == sentences
