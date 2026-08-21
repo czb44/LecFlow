@@ -11,6 +11,25 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 from ..transcript import filter_transcript, load_transcript, split_into_sentences
 
+BAD_LABELS = {
+    "i",
+    "we",
+    "you",
+    "he",
+    "she",
+    "they",
+    "it",
+    "this",
+    "that",
+    "these",
+    "those",
+    "question",
+    "example",
+    "thing",
+    "things",
+    "something",
+}
+
 
 def train_clusters(sentences: list[str], k: int) -> tuple[TfidfVectorizer, KMeans, list[int]]:
     """Vectorize sentences with TF-IDF classifier and cluster into K clusters with KMeans"""
@@ -98,7 +117,12 @@ def get_topic_labels(sentences: list[str], sent_transformer: SentenceTransformer
     # Centroid: mean of embeddings along rows, reshap for cosine similarity
     mean_embedding = np.mean(embeddings, axis=0).reshape(1, -1)  # 1D -> 2D
 
-    candidate_nouns = get_candidate_phrases(sentences)
+    candidate_nouns_prelim = get_candidate_phrases(sentences)
+    candidate_nouns = [
+        phrase
+        for phrase in candidate_nouns_prelim
+        if not (len(phrase.split()) == 1 and phrase.lower().strip(".,:;!?-") in BAD_LABELS)
+    ]
     if not candidate_nouns:  # Edge case - no nouns identified
         similarities = cosine_similarity(embeddings, mean_embedding).flatten()  # -> 1D
         closest_index = np.argmax(similarities)

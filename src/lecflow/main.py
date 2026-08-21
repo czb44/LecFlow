@@ -56,7 +56,7 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
 
 
 def main() -> None:
-    file_path = Path("outputs/notes/6.006_Lecture_5_notes.md")
+    file_path = Path("data/sample/6.006_Lecture_5.md")
     raw_transcript_txt = load_transcript(file_path)
 
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
