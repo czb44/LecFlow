@@ -2,6 +2,8 @@ from pathlib import Path
 
 import spacy  # NLP to splice clean transcript
 
+from lecflow.unit_type.rules import is_question
+
 
 def load_transcript(file_path: Path) -> str:
     """Loads transcript and extracts its contents"""
@@ -26,6 +28,30 @@ def split_into_sentences(filtered_transcript: str) -> list[str]:
     proc_transcript = nlp(filtered_transcript)
     # Convert sentence to string, remove whitespace, and ignore blank / empty sentences
     return [sent.text.strip() for sent in proc_transcript.sents if sent.text.strip()]
+
+
+def remove_short_artifacts(sentences: list[str]) -> list[str]:
+    """Removes artifact sentences.
+    Examples include single-word sentences like 'Yes,' or 'right.'"""
+    clean_sentences = []
+
+    for i, sentence in enumerate(sentences):
+        words = sentence.lower().strip(".:;,'?![]").split()  # standardize
+
+        if len(words) > 2:  # keep if 3+ words
+            clean_sentences.append(sentence)
+            continue
+
+        # Keep if question
+        if is_question(sentence):
+            clean_sentences.append(sentence)
+            continue
+
+        # Keep if previous sentence was a question
+        if i > 0 and is_question(sentences[i - 1]):
+            clean_sentences.append(sentence)
+
+    return clean_sentences
 
 
 def save_transcript(transcript: str, output_path: Path) -> None:

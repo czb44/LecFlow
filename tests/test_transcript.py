@@ -1,6 +1,7 @@
 from lecflow.transcript import (
     filter_transcript,
     load_transcript,
+    remove_short_artifacts,
     save_transcript,
     split_into_sentences,
 )
@@ -58,3 +59,15 @@ def test_save_transcript(tmp_path):
     save_transcript(transcript, out_path)
     assert out_path.exists()
     assert out_path.read_text(encoding="utf-8") == transcript
+
+
+def test_remove_short_artifacts():
+    sentences = ["Yes", "[AUDIENCE]"]
+    clean = remove_short_artifacts(sentences)
+    assert len(clean) == 0
+
+
+def test_remove_short_artifacts_question_kept():
+    sentences = ["What is the answer to this problem?", "Binomial"]
+    clean = remove_short_artifacts(sentences)
+    assert len(clean) == len(sentences)

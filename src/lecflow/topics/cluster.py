@@ -56,6 +56,28 @@ def group_by_cluster(sentences: list[str], cluster_labels: list[int]) -> dict[in
     return groups
 
 
+def group_adjacent(sentences: list[str], cluster_labels: list[int]) -> list[list[str]]:
+    """Groups consecutive sentences of the same cluster into ordered blocks. Maintains
+    sentence order; topic mentioned in two different spots becomes two different blocks."""
+    if not sentences:  # avoid error if empty
+        return []
+
+    if len(sentences) != len(cluster_labels):
+        raise ValueError("sentences and cluster_labels unequal length")
+
+    grouped_blocks = []
+    current_block, current_cluster = [sentences[0]], cluster_labels[0]
+    for sentence, label in zip(sentences[1:], cluster_labels[1:]):
+        if label == current_cluster:
+            current_block.append(sentence)
+        else:
+            grouped_blocks.append(current_block)
+            current_cluster = label
+            current_block = [sentence]
+    grouped_blocks.append(current_block)
+    return grouped_blocks
+
+
 nlp = spacy.load("en_core_web_sm")  # load spacy one time
 
 

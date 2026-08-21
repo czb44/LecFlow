@@ -7,10 +7,15 @@ from .classification.predict import predict_labels_embed
 from .notes import generate_notes, save_notes
 from .topics.cluster import (
     get_topic_labels,
-    group_by_cluster,
+    group_adjacent,
     sentence_embedding_cluster_train,
 )
-from .transcript import filter_transcript, load_transcript, split_into_sentences
+from .transcript import (
+    filter_transcript,
+    load_transcript,
+    remove_short_artifacts,
+    split_into_sentences,
+)
 
 
 def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer) -> tuple[str, str]:
@@ -18,7 +23,10 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
     transcript and lecture notes."""
     # Load and clean transcript
     filtered = filter_transcript(raw_transcript_txt)
-    sentences = split_into_sentences(filtered)
+    raw_sentences = split_into_sentences(filtered)
+
+    # Remove short artifacts / single word sentences
+    sentences = remove_short_artifacts(raw_sentences)
 
     # Use pre-trained LR classifier (embed) for housekeeping
     embed_predictions = predict_labels_embed(housekeeping_model, sentences, sent_transformer)
@@ -36,7 +44,11 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
         (model, cluster_labels) = sentence_embedding_cluster_train(
             content_sentences, sent_transformer
         )
-        blocks = group_by_cluster(content_sentences, cluster_labels)
+        adj_blocks = group_adjacent(content_sentences, cluster_labels)
+
+        blocks = {}
+        for block_idx, block in enumerate(adj_blocks):
+            blocks[block_idx] = block
 
     topic_labels = {}
     for cluster_num, group_of_sents in blocks.items():
@@ -48,7 +60,7 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
 
 
 def main() -> None:
-    file_path = Path("data/sample/lecture_2.txt")
+    file_path = Path("data/sample/mit_18_650_full_lecture_1.txt")
     raw_transcript_txt = load_transcript(file_path)
 
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
@@ -56,7 +68,7 @@ def main() -> None:
 
     filtered, notes = full_pipeline(raw_transcript_txt, housekeeping_model, sent_transformer)
 
-    output_path = Path("outputs/notes/lecture_2_notes_2.md")
+    output_path = Path("outputs/notes/mit_18_650_full_lecture_1_notes_4.md")
     save_notes(notes, output_path)
     print(f"Notes saved to: {output_path}")
 
