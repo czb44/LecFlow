@@ -197,7 +197,7 @@ def test_segment_by_similarity(sent_transformer):
 
 
 def test_split_large_blocks(sent_transformer):
-    block = [i for i in range(60)]
+    block = [str(i) for i in range(60)]  # expects list[str] input
     result = split_large_blocks([block], sent_transformer, max_block_size=20)
     flat = [sentence for group in result for sentence in group]
     assert flat == block

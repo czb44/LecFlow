@@ -19,6 +19,7 @@ dependencies = [
     "sqlalchemy", 
     "streamlit", 
     "faster-whisper",
+    "ollama",
 ]
 
 [project.optional-dependencies]

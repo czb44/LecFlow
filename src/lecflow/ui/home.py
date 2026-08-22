@@ -5,12 +5,14 @@ import streamlit as st
 
 from lecflow.audio import get_audio_transcription, video_to_audio
 from lecflow.database import save_lecture
+from lecflow.llm.ollama import OllamaClient
 from lecflow.main import full_pipeline
 from lecflow.models import load_all_models
 from lecflow.notes import save_notes
 from lecflow.transcript import save_transcript
 
 housekeeping_model, sent_transformer, audio_model = load_all_models()
+llm_client = OllamaClient()
 
 st.title("LecFlow")
 st.subheader("Bringing your lecture to life")
@@ -63,7 +65,7 @@ if file:
                         temp_path.unlink()
 
             filtered, notes = full_pipeline(
-                raw_transcript_txt, housekeeping_model, sent_transformer
+                raw_transcript_txt, housekeeping_model, sent_transformer, llm_client
             )
 
             # prevent duplicate file names: assign unique id

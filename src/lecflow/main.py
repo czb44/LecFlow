@@ -4,6 +4,7 @@ from sentence_transformers import SentenceTransformer
 
 from .classification.data import load_embed_model
 from .classification.predict import predict_labels_embed
+from .llm.ollama import OllamaClient
 from .notes import generate_notes, save_notes
 from .topics.cluster import (
     get_topic_labels,
@@ -17,14 +18,19 @@ from .transcript import (
 )
 
 
-def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer) -> tuple[str, str]:
+def full_pipeline(
+    raw_transcript_txt: str,
+    housekeeping_model,
+    sent_transformer: SentenceTransformer,
+    llm_client: OllamaClient,
+) -> tuple[str, str]:
     """Runs full lecture processing pipeline. Returns filtered
     transcript and lecture notes."""
     # Load and clean transcript
     filtered = filter_transcript(raw_transcript_txt)
     raw_sentences = split_into_sentences(filtered)
 
-    # Remove short artifacts / single word sentences
+    # Rule-based artifact cleaning
     sentences = remove_short_artifacts(raw_sentences)
 
     # Use pre-trained LR classifier (embed) for housekeeping
@@ -37,14 +43,22 @@ def full_pipeline(raw_transcript_txt: str, housekeeping_model, sent_transformer)
         sentence for sentence, prediction in zip(sentences, embed_predictions) if prediction == 1
     ]
 
+    if not content_sentences:
+        return filtered, "# Lecture Notes\n\nNo academic content found."
+
     if len(content_sentences) < 3:
-        blocks = {0: content_sentences}
+        adj_blocks = [content_sentences]
     else:
         adj_blocks = segment_by_similarity(content_sentences, sent_transformer)
 
-        blocks = {}
-        for block_idx, block in enumerate(adj_blocks):
-            blocks[block_idx] = block
+    blocks = {}
+    for block_idx, block in enumerate(adj_blocks):
+        refined_block = llm_client.refine_notes(block)
+        if refined_block:  # skip if no relevant sentences
+            blocks[block_idx] = refined_block
+
+    if not blocks:
+        return filtered, "# Lecture Notes\n\nNo academic content found."
 
     topic_labels = {}
     for cluster_num, group_of_sents in blocks.items():
@@ -61,10 +75,13 @@ def main() -> None:
 
     sent_transformer = SentenceTransformer("all-MiniLM-L6-v2")
     housekeeping_model = load_embed_model(Path("models"))
+    llm_client = OllamaClient()
 
-    filtered, notes = full_pipeline(raw_transcript_txt, housekeeping_model, sent_transformer)
+    filtered, notes = full_pipeline(
+        raw_transcript_txt, housekeeping_model, sent_transformer, llm_client
+    )
 
-    output_path = Path("outputs/notes/6.006_Lecture_5_notes_notes_6.md")
+    output_path = Path("outputs/notes/6.006_Lecture_5_notes_notes_7.md")
     save_notes(notes, output_path)
     print(f"Notes saved to: {output_path}")
 
