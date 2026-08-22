@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer
 from .classification.data import load_embed_model
 from .classification.predict import predict_labels_embed
 from .llm.ollama import OllamaClient
-from .notes import generate_notes, save_notes
+from .notes import generate_notes, housekeeping_only_notes, save_notes
 from .topics.cluster import (
     get_topic_labels,
     segment_by_similarity,
@@ -43,8 +43,13 @@ def full_pipeline(
         sentence for sentence, prediction in zip(sentences, embed_predictions) if prediction == 1
     ]
 
+    if housekeeping_sentences:
+        # Keep only relevant housekeeping remarks by filtering with LLM
+        housekeeping_sentences = llm_client.filter_housekeeping(housekeeping_sentences)
+
     if not content_sentences:
-        return filtered, "# Lecture Notes\n\nNo academic content found."
+        notes = housekeeping_only_notes(housekeeping_sentences)
+        return filtered, notes
 
     if len(content_sentences) < 3:
         adj_blocks = [content_sentences]
@@ -58,7 +63,8 @@ def full_pipeline(
             blocks[block_idx] = refined_block
 
     if not blocks:
-        return filtered, "# Lecture Notes\n\nNo academic content found."
+        notes = housekeeping_only_notes(housekeeping_sentences)
+        return filtered, notes
 
     topic_labels = {}
     for cluster_num, group_of_sents in blocks.items():

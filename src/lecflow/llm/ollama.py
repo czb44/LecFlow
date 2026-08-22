@@ -1,6 +1,6 @@
 import ollama
 
-from .prompts import NOTE_REFINEMENT_PROMPT
+from .prompts import HOUSEKEEPING_REFINEMENT_PROMPT, NOTE_REFINEMENT_PROMPT
 
 
 class OllamaClient:
@@ -21,6 +21,40 @@ class OllamaClient:
                     {
                         "role": "system",
                         "content": NOTE_REFINEMENT_PROMPT,
+                    },
+                    {
+                        "role": "user",
+                        "content": content,
+                    },
+                ],
+            )
+        except Exception:
+            raise RuntimeError(
+                "Ollama refinement failed. "
+                "Make sure Ollama is correctly running with correct model installed."
+            )
+
+        result = response["message"]["content"]
+
+        blank_outputs = ["", "-", " ", "- ", " -", " - "]
+        if result.strip() in blank_outputs:
+            return []
+        else:
+            return [line.removeprefix("- ").strip() for line in result.splitlines() if line.strip()]
+
+    def filter_housekeeping(self, sentences_block: list[str]) -> list[str]:
+        """Filters a block of housekeeping sentences with Ollama model.
+        Removes insignificant or irrelevant sentences"""
+        # Ollama requires content to be a string
+        content = "\n".join(f"- {sentence}" for sentence in sentences_block)
+
+        try:
+            response = ollama.chat(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": HOUSEKEEPING_REFINEMENT_PROMPT,
                     },
                     {
                         "role": "user",

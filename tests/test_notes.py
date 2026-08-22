@@ -1,5 +1,5 @@
 from lecflow import notes
-from lecflow.notes import generate_notes, save_notes
+from lecflow.notes import generate_notes, housekeeping_only_notes, save_notes
 
 
 def test_generate_notes(monkeypatch):
@@ -20,6 +20,23 @@ def test_generate_notes(monkeypatch):
     )
     assert "## Housekeeping" in result
     assert "- Next class is canceled." in result
+
+
+def test_housekeeping_only_notes_empty():
+    result = housekeeping_only_notes([])
+    assert result == "# Lecture Notes\n\n"
+
+
+def test_housekeeping_only_notes():
+    sentences = [
+        "PSET is due Friday.",
+        "Exam is next Tuesday.",
+    ]
+    result = housekeeping_only_notes(sentences)
+    assert "# Lecture Notes" in result
+    assert "## Housekeeping" in result
+    assert "- PSET is due Friday." in result
+    assert "- Exam is next Tuesday." in result
 
 
 def test_save_notes(tmp_path):

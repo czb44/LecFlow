@@ -33,14 +33,33 @@ def generate_notes(
                 body += f"- {sentence}\n"
         body += "\n\n"
 
-    toc += "- [Housekeeping](#housekeeping)\n\n\n"
-
-    housekeeping_head = "## Housekeeping\n\n"
-    housekeeping_body = ""
-    for sent in housekeeping_sentences:
-        housekeeping_body += f"- {sent}\n"
+    if housekeeping_sentences:  # Only add if relevant content remains
+        toc += "- [Housekeeping](#housekeeping)\n\n\n"
+        housekeeping_head = "## Housekeeping\n\n"
+        housekeeping_body = ""
+        for sent in housekeeping_sentences:
+            housekeeping_body += f"- {sent}\n"
+    else:
+        housekeeping_head = ""
+        housekeeping_body = ""
 
     return heading + toc_header + toc + body + housekeeping_head + housekeeping_body
+
+
+def housekeeping_only_notes(housekeeping_sentences: list[str]) -> str:
+    """Creates lecture notes and formats housekeeping sentences
+    in the case where the lecture contains no content sentences"""
+    heading = "# Lecture Notes\n\n"
+    if housekeeping_sentences:  # Only add if relevant content remains
+        housekeeping_head = "## Housekeeping\n\n"
+        housekeeping_body = ""
+        for sent in housekeeping_sentences:
+            housekeeping_body += f"- {sent}\n"
+    else:
+        housekeeping_head = ""
+        housekeeping_body = ""
+
+    return heading + housekeeping_head + housekeeping_body
 
 
 def save_notes(notes: str, output_path: Path) -> None:
