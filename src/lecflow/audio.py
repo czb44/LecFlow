@@ -71,8 +71,8 @@ def video_to_audio(video_path: Path, audio_output_path: Path) -> None:
 
 
 if __name__ == "__main__":
-    video_path = Path("data/sample/short_test_video.MOV")
-    extracted_audio_path = Path("data/sample/short_test_video_audio.wav")
+    video_path = Path("data/sample/6_006_Lecture_Video_Full.mp4")
+    extracted_audio_path = Path("data/sample/6_006_Lecture_Video_Full_audio.wav")
 
     audio_model = load_audio_model()
     video_to_audio(video_path, extracted_audio_path)

@@ -1,3 +1,4 @@
+from collections import defaultdict
 from pathlib import Path
 
 from sentence_transformers import SentenceTransformer
@@ -67,8 +68,13 @@ def full_pipeline(
         return filtered, notes
 
     topic_labels = {}
+    label_counts: defaultdict[str, int] = defaultdict(int)  # track duplicate topic labels
     for cluster_num, group_of_sents in blocks.items():
-        topic_labels[cluster_num] = get_topic_labels(group_of_sents, sent_transformer)
+        label = get_topic_labels(group_of_sents, sent_transformer)
+        label_counts[label] += 1
+        if label_counts[label] > 1:
+            label = f"{label} {label_counts[label]}"
+        topic_labels[cluster_num] = label
 
     notes = generate_notes(blocks, topic_labels, housekeeping_sentences)
 
@@ -87,7 +93,7 @@ def main() -> None:
         raw_transcript_txt, housekeeping_model, sent_transformer, llm_client
     )
 
-    output_path = Path("outputs/notes/6.006_Lecture_5_notes_notes_7.md")
+    output_path = Path("outputs/notes/6.006_Lecture_5_notes_notes_9.md")
     save_notes(notes, output_path)
     print(f"Notes saved to: {output_path}")
 

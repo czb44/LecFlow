@@ -32,7 +32,7 @@ if file:
     st.write(f"Lecture: {name}")
 
     if st.button("Generate Notes"):
-        with st.spinner("Processing..."):
+        with st.spinner("Processing... this may take a few minutes."):
             if upload_type == "Text":
                 raw_transcript_txt = file.read().decode(encoding="utf-8")
             else:
