@@ -4,8 +4,11 @@ from pathlib import Path
 from sqlalchemy import DateTime, String, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
-# Initialize SQLite --> lecflow.db
-engine = create_engine("sqlite:///db/lecflow.db")
+# Initialize SQLite on first run --> lecflow.db
+DB_PATH = Path("db/lecflow.db")
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+engine = create_engine(f"sqlite:///{DB_PATH}")
 
 
 # Initialize base class for models to inherit from
