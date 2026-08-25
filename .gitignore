@@ -7,6 +7,7 @@ venv/
 .env
 .env.*
 env.
+env/
 ENV/
 
 #Cache files
@@ -14,6 +15,11 @@ __pycache__/
 *.pyc
 *.py[cod]
 *.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
 # macOS system files
 .DS_Store
