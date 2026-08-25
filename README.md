@@ -20,7 +20,7 @@ LecFlow is a local Python app that converts lecture video, audio, or transcripts
 #### Normal User:
 
 ```bash
-git clone
+git clone https://github.com/czb44/LecFlow.git
 cd lecflow
 
 brew install ffmpeg
