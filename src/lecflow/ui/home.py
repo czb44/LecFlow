@@ -17,7 +17,7 @@ llm_client = OllamaClient()
 st.title("LecFlow")
 st.subheader("Bringing your lecture to life")
 
-# Muliple file upload options
+# Multiple file upload options
 upload_type = st.radio("Upload type", ["Text", "Audio", "Video"])
 if upload_type == "Text":
     file = st.file_uploader("Upload transcript", type=["txt"])

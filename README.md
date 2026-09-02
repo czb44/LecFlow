@@ -21,7 +21,7 @@ LecFlow is a local Python app that converts lecture video, audio, or transcripts
 
 ```bash
 git clone https://github.com/czb44/LecFlow.git
-cd lecflow
+cd LecFlow
 
 brew install ffmpeg
 brew install ollama
@@ -33,6 +33,9 @@ source .venv/bin/activate
 # Install dependencies
 pip install -e .
 
+# Spacy model setup
+python -m spacy download en_core_web_sm
+
 # Download Qwen model locally (only required once)
 ollama pull qwen3:4b-instruct-2507-q4_K_M
 ```
@@ -40,8 +43,8 @@ ollama pull qwen3:4b-instruct-2507-q4_K_M
 #### Developer:
 
 ```bash
-git clone
-cd lecflow
+git clone https://github.com/czb44/LecFlow.git
+cd LecFlow
 
 brew install ffmpeg
 brew install ollama
@@ -50,6 +53,8 @@ python -m venv .venv
 source .venv/bin/activate
 
 pip install -e ".[dev]"
+
+python -m spacy download en_core_web_sm
 
 pre-commit install
 
@@ -138,7 +143,7 @@ Relevant examples run on 8GB M1 Macbook Air:
 **Stack:** Python, scikit-learn, sentence-transformers, spaCy, faster-whisper, SQLAlchemy/SQLite, Streamlit, pytest, Ruff, mypy, pre-commit, GitHub Actions, Ollama (Qwen3 4B)
 
 ## Methodology
-See [METHODOLOGY.md](METHODOLOGY.md) for details on the development process and signficant decisions.
+See [METHODOLOGY.md](METHODOLOGY.md) for details on the development process and significant decisions.
 
 ## Testing
 LecFlow uses the following:

@@ -57,7 +57,7 @@ def remove_short_artifacts(sentences: list[str]) -> list[str]:
 def save_transcript(transcript: str, output_path: Path) -> None:
     """Ensures output folder exists and writes notes (Markdown string)
     to output Markdown File"""
-    # create parent directories if neccessary, write notes to file
+    # create parent directories if necessary, write notes to file
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(transcript, encoding="utf-8")
 

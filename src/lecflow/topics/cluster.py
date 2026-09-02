@@ -67,7 +67,7 @@ def sentence_embedding_cluster_train(
 
 
 def group_by_cluster(sentences: list[str], cluster_labels: list[int]) -> dict[int, list[str]]:
-    """Group all sentences by their assigned cluster number, regardeless of poisition in transcript.
+    """Group all sentences by their assigned cluster number, regardless of position in transcript.
     Note: doesn't preserve origical sentence order; can merge non-adjacent references of topic."""
     groups = defaultdict(list)
     for sent, label in zip(sentences, cluster_labels):

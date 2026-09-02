@@ -54,7 +54,9 @@ def test_filter_housekeeping_empty(monkeypatch):
 
 def test_filter_housekeeping(monkeypatch):
     def fake_chat(model, messages):
-        return {"message": {"content": ("- Class tomorrow is cancelled.\n- PSET 5 is Due Friday.")}}
+        return {
+            "message": {"content": ("- Class tommorrow is cancelled.\n- PSET 5 is Due Friday.")}
+        }
 
     monkeypatch.setattr("lecflow.llm.ollama.ollama.chat", fake_chat)
 
@@ -68,6 +70,6 @@ def test_filter_housekeeping(monkeypatch):
     )
 
     assert result == [
-        "Class tomorrow is cancelled.",
+        "Class tommorrow is cancelled.",
         "PSET 5 is Due Friday.",
     ]
